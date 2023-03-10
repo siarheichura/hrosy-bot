@@ -23,6 +23,10 @@ export class RootComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    console.log('TELEGRAM LOG: ', tg)
+    console.log('TG_LOG: ', tg)
+    console.log('TG_INIT_DATA000_LOG: ', tg.initData)
+    console.log('TG_INIT_DATA111_LOG: ', tg.WebAppInitData)
+    console.log('TG_USER_LOG: ', tg.WebAppUser)
+    console.log('TG_CHAT_LOG: ', tg.WebAppChat)
   }
 }
