@@ -24,9 +24,7 @@ export class RootComponent implements OnInit{
 
   ngOnInit(): void {
     console.log('TG_LOG: ', tg)
-    console.log('TG_INIT_DATA000_LOG: ', tg.initData)
-    console.log('TG_INIT_DATA111_LOG: ', tg.WebAppInitData)
-    console.log('TG_USER_LOG: ', tg.WebAppUser)
-    console.log('TG_CHAT_LOG: ', tg.WebAppChat)
+    console.log('TG_INIT_DATA_UNSAFE: ', tg.initDataUnsafe)
+    console.log('TG_INIT_DATA_UNSAFE_USER: ', tg.initDataUnsafe.user)
   }
 }
