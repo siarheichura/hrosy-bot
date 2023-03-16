@@ -1,4 +1,4 @@
-import {ICategory} from "./core.interfaces";
+import { ICategory } from './core.interfaces'
 
 export interface IAppState {
   categories: ICategoriesState

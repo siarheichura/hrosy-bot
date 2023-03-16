@@ -1,12 +1,12 @@
-import {Injectable} from "@angular/core";
-import {Actions, ofType} from "@ngrx/effects";
+import { Injectable } from '@angular/core'
+import { Actions, ofType } from '@ngrx/effects'
 import * as CategoriesActions from './categories.actions'
-import {catchError, map, of, switchMap} from "rxjs";
+import { catchError, map, of, switchMap } from 'rxjs'
 
 @Injectable()
 export class CategoriesEffect {
   constructor(
-    private actions$: Actions
+    private actions$: Actions,
     // private categoriesService: CategoriesService
   ) {
   }

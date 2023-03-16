@@ -1,6 +1,6 @@
-import {ICategoriesState} from "../../interfaces/store.interfaces";
+import { ICategoriesState } from '../../interfaces/store.interfaces'
 
 export const initCategoriesState: ICategoriesState = {
   categories: [],
-  error: null
+  error: null,
 }
