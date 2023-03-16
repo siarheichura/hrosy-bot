@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
-import { TelegramWebApps } from 'telegram-webapps-types-new'
 
-const tg = Telegram.WebApp
+// @ts-ignore
+const tg = window.Telegram.WebApp
 
 @Component({
   selector: 'app-root',
