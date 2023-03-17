@@ -1,5 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser'
-import { importProvidersFrom } from '@angular/core'
+import { enableProdMode, importProvidersFrom } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -18,6 +18,8 @@ import { StatisticsComponent } from './app/components/pages/statistics/statistic
 import { ExpensesComponent } from './app/components/pages/expenses/expenses.component'
 import { ROUTES_ENUM } from './app/constants/enums'
 
+import { environment } from './environments/environment'
+
 export const routes: Routes = [
   { path: ROUTES_ENUM.INDEX, component: MainComponent, data: { state: '1' } },
   {
@@ -30,6 +32,10 @@ export const routes: Routes = [
   { path: ROUTES_ENUM.WALLETS, component: WalletsComponent },
   { path: ROUTES_ENUM.STATISTICS, component: StatisticsComponent }
 ]
+
+if (environment.production) {
+  enableProdMode()
+}
 
 bootstrapApplication(RootComponent, {
   providers: [
