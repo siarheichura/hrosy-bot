@@ -13,7 +13,8 @@ html {
 }
 
 body {
-  background-color: $bg-color;
+  padding: 10px;
+  background-color: $secondary-bg-color;
   color: $text-color;
   font-family: $font;
 }

@@ -1,4 +1,6 @@
-<div class="main-button_emoji">{{ data.emoji }}</div>
+<div class="main-button_emoji" (click)="onClick(data.route)">
+  {{ data.emoji }}
+</div>
 <div class="main-button_name">{{ data.name }}</div>
 
 <!-- Example of svg-icon usage -->

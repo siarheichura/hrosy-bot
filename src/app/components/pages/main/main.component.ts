@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { MainButtonComponent } from '../../main-button/main-button.component'
-import { NgForOf } from '@angular/common'
+import { CommonModule } from '@angular/common'
+import { ROUTES_ENUM } from '../../../constants/enums'
 
 @Component({
   selector: 'app-main',
@@ -8,15 +9,15 @@ import { NgForOf } from '@angular/common'
   styleUrls: ['./main.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MainButtonComponent, NgForOf]
+  imports: [CommonModule, MainButtonComponent]
 })
 export class MainComponent {
-  menuButtons: { name: string; emoji: string }[] = [
-    { name: 'Expenses', emoji: '👛' },
-    { name: 'Incomes', emoji: '👛' },
-    { name: 'Categories', emoji: '👛' },
-    { name: 'Wallets', emoji: '👛' },
-    { name: 'Statistics', emoji: '👛' }
+  menuButtons: { name: string; emoji: string; route: string }[] = [
+    { name: 'Expenses', emoji: '⬆️', route: ROUTES_ENUM.EXPENSES },
+    { name: 'Incomes', emoji: '⬇️', route: ROUTES_ENUM.INCOMES },
+    { name: 'Categories', emoji: '🏷', route: ROUTES_ENUM.CATEGORIES },
+    { name: 'Wallets', emoji: '👛', route: ROUTES_ENUM.WALLETS },
+    { name: 'Statistics', emoji: '📈', route: ROUTES_ENUM.STATISTICS }
   ]
 
   constructor() {}
