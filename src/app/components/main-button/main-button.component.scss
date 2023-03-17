@@ -1,0 +1,25 @@
+@import "src/variables";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: $button-bg-color;
+  color: $button-text-color;
+  border-radius: 3px;
+  transition: 0.3s;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .main-button_emoji {
+    font-size: 5rem;
+  }
+
+  .main-button_name {
+    font-size: 1.2rem;
+  }
+}

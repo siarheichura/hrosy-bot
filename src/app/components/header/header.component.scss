@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .header_balance {
+    font-size: 1.4rem;
+  }
+
+  .header_stash {
+    font-size: 1.2rem;
+  }
+}
