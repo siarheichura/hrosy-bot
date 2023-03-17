@@ -2,6 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser'
 import { importProvidersFrom } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { HttpClientModule } from '@angular/common/http'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { provideStore } from '@ngrx/store'
 import { provideStoreDevtools } from '@ngrx/store-devtools'
 import { provideEffects } from '@ngrx/effects'
@@ -18,8 +19,12 @@ import { ExpensesComponent } from './app/components/pages/expenses/expenses.comp
 import { ROUTES_ENUM } from './app/constants/enums'
 
 export const routes: Routes = [
-  { path: ROUTES_ENUM.INDEX, component: MainComponent },
-  { path: ROUTES_ENUM.EXPENSES, component: ExpensesComponent },
+  { path: ROUTES_ENUM.INDEX, component: MainComponent, data: { state: '1' } },
+  {
+    path: ROUTES_ENUM.EXPENSES,
+    component: ExpensesComponent,
+    data: { state: '2' }
+  },
   { path: ROUTES_ENUM.INCOMES, component: IncomesComponent },
   { path: ROUTES_ENUM.CATEGORIES, component: CategoriesComponent },
   { path: ROUTES_ENUM.WALLETS, component: WalletsComponent },
@@ -30,8 +35,9 @@ bootstrapApplication(RootComponent, {
   providers: [
     importProvidersFrom(
       RouterModule.forRoot(routes),
-      AngularSvgIconModule.forRoot(),
-      HttpClientModule
+      HttpClientModule,
+      BrowserAnimationsModule,
+      AngularSvgIconModule.forRoot()
     ),
     provideStore(reducers),
     provideStoreDevtools(),
