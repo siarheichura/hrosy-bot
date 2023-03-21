@@ -10,6 +10,7 @@ import { HttpService } from '../../services/http.service'
 import { getWallets } from '../../store/actions'
 import { walletsSelector } from '../../store/selectors'
 import { IState } from '../../store/store'
+import { environment } from '../../../environments/environment'
 
 // @ts-ignore
 const tg = window.Telegram.WebApp
@@ -35,10 +36,6 @@ export class RootComponent implements OnInit {
 
   ngOnInit(): void {
     this.initTelegram()
-
-    // this.httpService.setHashToLocalStorage(tg.initDataUnsafe.hash) // for prod
-    this.httpService.setHashToLocalStorage('dev_hash')
-
     this.store.dispatch(getWallets())
   }
 
@@ -47,8 +44,18 @@ export class RootComponent implements OnInit {
   }
 
   initTelegram() {
+    console.log('TELEGRAM DATA LOG: ', tg)
+    // create session
     tg.ready()
     tg.expand()
-    console.log('TELEGRAM DATA LOG: ', tg)
+
+    if (environment.production) {
+      this.httpService.setUserToLocalStorage(
+        tg.initDataUnsafe.hash,
+        tg.initDataUnsafe.user.id
+      )
+    } else {
+      this.httpService.setUserToLocalStorage('dev_hash', 5958132991)
+    }
   }
 }

@@ -37,7 +37,7 @@ export const routes: Routes = [
 if (environment.production) {
   enableProdMode()
 }
-console.log('ENV: ', environment)
+
 bootstrapApplication(RootComponent, {
   providers: [
     importProvidersFrom(
