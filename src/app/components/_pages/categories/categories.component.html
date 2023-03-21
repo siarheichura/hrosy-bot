@@ -34,4 +34,7 @@
     (matChipInputTokenEnd)="addIncomeCategory($event)" />
 </mat-form-field>
 
-<app-button name="Save" (buttonClick)="saveHandler()"></app-button>
+<app-button
+  *ngrxLet="categories$ as categories"
+  name="Save"
+  (buttonClick)="saveHandler(categories)"></app-button>

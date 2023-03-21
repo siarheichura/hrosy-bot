@@ -1,7 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Store } from '@ngrx/store'
-import { map, take } from 'rxjs'
+import {
+  BehaviorSubject,
+  map,
+  Observable,
+  skip,
+  take,
+  takeLast,
+  tap
+} from 'rxjs'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips'
 import { MatIconModule } from '@angular/material/icon'
@@ -10,20 +18,23 @@ import { IState } from '../../../store/store'
 import { getCategories, updateCategories } from '../../../store/actions'
 import { categoriesSelector } from '../../../store/selectors'
 import { ButtonComponent } from '../../button/button.component'
+import { LetModule } from '@ngrx/component'
+import { ICategories } from '../../../interfaces'
 
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss'],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     MatFormFieldModule,
     MatChipsModule,
     MatIconModule,
     ReactiveFormsModule,
-    ButtonComponent
+    ButtonComponent,
+    LetModule
   ]
 })
 export class CategoriesComponent implements OnInit {
@@ -88,9 +99,7 @@ export class CategoriesComponent implements OnInit {
     event.chipInput!.clear()
   }
 
-  saveHandler(): void {
-    this.categories$.pipe(take(1)).subscribe(categories => {
-      this.store.dispatch(updateCategories({ categories }))
-    })
+  saveHandler(categories: ICategories): void {
+    this.store.dispatch(updateCategories({ categories }))
   }
 }
