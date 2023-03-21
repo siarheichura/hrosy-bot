@@ -17,9 +17,9 @@ export class HttpService {
   }
 
   setHashToLocalStorage(hash: string): void {
-    if (!hash) {
-      localStorage.setItem('hash', hash)
-    }
+    // if (!hash) {
+    localStorage.setItem('hash', hash)
+    // }
   }
 
   // categories
