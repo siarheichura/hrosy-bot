@@ -1,7 +1,7 @@
-<app-header></app-header>
+<app-header [wallets]="wallets$ | async"></app-header>
 <div
   class="router-wrapper"
-  [@moveFromLeft]="getState(o)"
-  [@moveFromRight]="getState(o)">
-  <router-outlet #o="outlet"> </router-outlet>
+  [@moveFromLeft]="getStateForAnimation(o)"
+  [@moveFromRight]="getStateForAnimation(o)">
+  <router-outlet #o="outlet"></router-outlet>
 </div>

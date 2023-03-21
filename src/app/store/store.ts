@@ -1,7 +1,11 @@
 import { ActionReducerMap } from '@ngrx/store'
-import { IAppState } from '../interfaces/store.interfaces'
-import { categoriesReducers } from './categories/categories.reducers'
+import { reducers } from './reducers'
+import { IAppState } from '../interfaces'
 
-export const reducers: ActionReducerMap<IAppState> = {
-  categories: categoriesReducers,
+export interface IState {
+  state: IAppState
+}
+
+export const reducer: ActionReducerMap<IState> = {
+  state: reducers
 }

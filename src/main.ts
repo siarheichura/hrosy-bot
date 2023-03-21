@@ -1,25 +1,26 @@
 import { bootstrapApplication } from '@angular/platform-browser'
 import { enableProdMode, importProvidersFrom } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { HttpClientModule } from '@angular/common/http'
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { provideStore } from '@ngrx/store'
 import { provideStoreDevtools } from '@ngrx/store-devtools'
 import { provideEffects } from '@ngrx/effects'
-import { AngularSvgIconModule } from 'angular-svg-icon'
+import { reducer } from './app/store/store'
+import { Effects } from './app/store/effects'
 
-import { reducers } from './app/store/store'
 import { RootComponent } from './app/components/root/root.component'
-import { MainComponent } from './app/components/pages/main/main.component'
-import { CategoriesComponent } from './app/components/pages/categories/categories.component'
-import { WalletsComponent } from './app/components/pages/wallets/wallets.component'
-import { IncomesComponent } from './app/components/pages/incomes/incomes.component'
-import { StatisticsComponent } from './app/components/pages/statistics/statistics.component'
-import { ExpensesComponent } from './app/components/pages/expenses/expenses.component'
-import { ROUTES_ENUM } from './app/constants/enums'
+import { MainComponent } from './app/components/_pages/main/main.component'
+import { CategoriesComponent } from './app/components/_pages/categories/categories.component'
+import { WalletsComponent } from './app/components/_pages/wallets/wallets.component'
+import { IncomesComponent } from './app/components/_pages/incomes/incomes.component'
+import { StatisticsComponent } from './app/components/_pages/statistics/statistics.component'
+import { ExpensesComponent } from './app/components/_pages/expenses/expenses.component'
 
+import { AuthInterceptor } from './app/services/auth.interceptor'
 import { environment } from './environments/environment'
 
+import { ROUTES_ENUM } from './app/constants/enums'
 export const routes: Routes = [
   { path: ROUTES_ENUM.INDEX, component: MainComponent, data: { state: '1' } },
   {
@@ -42,11 +43,11 @@ bootstrapApplication(RootComponent, {
     importProvidersFrom(
       RouterModule.forRoot(routes),
       HttpClientModule,
-      BrowserAnimationsModule,
-      AngularSvgIconModule.forRoot()
+      BrowserAnimationsModule
     ),
-    provideStore(reducers),
+    { provide: HTTP_INTERCEPTORS, multi: true, useClass: AuthInterceptor },
+    provideStore(reducer),
     provideStoreDevtools(),
-    provideEffects()
+    provideEffects([Effects])
   ]
 }).catch(err => console.error(err))

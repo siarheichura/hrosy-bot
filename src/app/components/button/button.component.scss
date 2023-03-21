@@ -1,0 +1,10 @@
+@import "src/variables";
+
+:host {
+  button {
+    width: 100%;
+    color: $button-text-color;
+    background-color: $button-bg-color;
+    border-radius: 3px;
+  }
+}

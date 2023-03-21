@@ -6,3 +6,8 @@ export enum ROUTES_ENUM {
   WALLETS = 'wallets',
   STATISTICS = 'statistics'
 }
+
+export enum OPERATION_TYPES {
+  INCOME = 'income',
+  EXPENSE = 'expense'
+}
