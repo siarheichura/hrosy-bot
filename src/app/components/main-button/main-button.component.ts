@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
-import { AngularSvgIconModule } from 'angular-svg-icon'
 import { ActivatedRoute, Router } from '@angular/router'
+import { CommonModule } from '@angular/common'
 
 @Component({
   selector: 'app-main-button',
@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router'
   styleUrls: ['./main-button.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AngularSvgIconModule]
+  imports: [CommonModule]
 })
 export class MainButtonComponent {
   @Input() data: { name: string; emoji: string; route: string }

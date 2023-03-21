@@ -1,0 +1,31 @@
+<!--<app-wallet-form-->
+<!--  [wallets]="wallets$ | async"-->
+<!--  [currencies]="currencies$ | async"></app-wallet-form>-->
+
+<form class="example-form" [formGroup]="form">
+  <mat-form-field appearance="fill">
+    <mat-label>Wallet currency</mat-label>
+    <mat-select formControlName="walletCurrency">
+      <mat-option
+        *ngFor="let currency of currencies$ | async"
+        [value]="currency"
+        >{{ currency }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Stash currency</mat-label>
+    <mat-select formControlName="stashCurrency">
+      <mat-option
+        *ngFor="let currency of currencies$ | async"
+        [value]="currency"
+        >{{ currency }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+
+  <div>
+    <app-button [name]="'Save'" (click)="saveHandler()"></app-button>
+  </div>
+</form>

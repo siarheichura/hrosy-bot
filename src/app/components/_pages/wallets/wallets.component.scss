@@ -1,0 +1,37 @@
+:host {
+  mat-form-field {
+    width: 100%;
+  }
+
+  .wallets-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+
+    &_control {
+      width: 100%;
+      display: flex;
+
+      label {
+        width: 70%;
+      }
+
+      input {
+        width: 30%;
+      }
+    }
+
+    &_buttons {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+
+      app-button {
+        width: 50%;
+      }
+    }
+  }
+}

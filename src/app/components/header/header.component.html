@@ -1,2 +1,6 @@
-<div class="header_balance">My balance: 500GEL</div>
-<div class="header_stash">My stash: 100USD</div>
+<div class="header_balance">
+  My balance: {{ wallets.wallet.balance }}{{ wallets.wallet.currency }}
+</div>
+<div class="header_stash">
+  My stash: {{ wallets.stash.balance }}{{ wallets.stash.currency }}
+</div>

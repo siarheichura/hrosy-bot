@@ -1,0 +1,37 @@
+<mat-form-field appearance="fill" class="form-field">
+  <mat-label>Expense categories</mat-label>
+  <mat-chip-grid #chipGridExpense>
+    <mat-chip-row
+      *ngFor="let category of (categories$ | async).expense; let i = index"
+      (removed)="removeExpenseCategory(i)">
+      {{ category }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+  </mat-chip-grid>
+  <input
+    placeholder="New category..."
+    [matChipInputFor]="chipGridExpense"
+    (matChipInputTokenEnd)="addExpenseCategory($event)" />
+</mat-form-field>
+
+<mat-form-field appearance="fill" class="form-field">
+  <mat-label>Income categories</mat-label>
+  <mat-chip-grid #chipGridIncome>
+    <mat-chip-row
+      *ngFor="let category of (categories$ | async).income; let i = index"
+      (removed)="removeIncomeCategory(i)">
+      {{ category }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+  </mat-chip-grid>
+  <input
+    placeholder="New category..."
+    [matChipInputFor]="chipGridIncome"
+    (matChipInputTokenEnd)="addIncomeCategory($event)" />
+</mat-form-field>
+
+<app-button name="Save" (buttonClick)="saveHandler()"></app-button>
