@@ -19,10 +19,15 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     let newReq = req
-    const hash = this.httpService.hash
+    const user = this.httpService.user
 
-    if (hash) {
-      newReq = req.clone({ headers: req.headers.set('hash', hash) })
+    if (user) {
+      newReq = req.clone({
+        headers: req.headers
+          .set('Content-Type', 'application/json')
+          .set('hash', user.hash)
+          .set('id', user.id.toString())
+      })
     }
 
     return next.handle(newReq)

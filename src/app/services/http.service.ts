@@ -12,14 +12,15 @@ export class HttpService {
 
   constructor(private http: HttpClient) {}
 
-  get hash(): string | null {
-    return localStorage.getItem('hash')
+  get user(): { hash: string; id: number } | null {
+    const user = localStorage.getItem('user')
+    return JSON.parse(user)
   }
 
-  setHashToLocalStorage(hash: string): void {
-    // if (!hash) {
-    localStorage.setItem('hash', hash)
-    // }
+  setUserToLocalStorage(hash: string, id: number): void {
+    if (!this.user) {
+      localStorage.setItem('user', JSON.stringify({ hash, id }))
+    }
   }
 
   // categories
