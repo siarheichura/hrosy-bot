@@ -1,5 +1,50 @@
 import { createAction, props } from '@ngrx/store'
-import { ICategories, IWallets } from '../interfaces'
+import {
+  ICategories,
+  IOperation,
+  IDayOperations,
+  IWallets,
+  OperationType
+} from '../interfaces'
+import { Dayjs } from 'dayjs'
+
+// operations
+export const getOperations = createAction(
+  '[OPERATIONS] get operations',
+  props<{ options: { type: OperationType; start: Dayjs; end: Dayjs } }>()
+)
+export const getOperationsSuccess = createAction(
+  '[OPERATIONS] get operations success',
+  props<{ operations: IDayOperations[] }>()
+)
+export const getOperationsFailure = createAction(
+  '[OPERATIONS] get operations failure',
+  props<{ error: string }>()
+)
+export const updateOperation = createAction(
+  '[OPERATIONS] update operation',
+  props<{ id: string; operation: IOperation }>()
+)
+export const updateOperationSuccess = createAction(
+  '[OPERATIONS] update operation success',
+  props<{ operations: IDayOperations[] }>()
+)
+export const updateOperationFailure = createAction(
+  '[OPERATIONS] update operation failure',
+  props<{ error: string }>()
+)
+export const deleteOperation = createAction(
+  '[OPERATIONS] delete operation',
+  props<{ id: string }>()
+)
+export const deleteOperationSuccess = createAction(
+  '[OPERATIONS] delete operation success',
+  props<{ operations: IOperation[] }>()
+)
+export const deleteOperationFailure = createAction(
+  '[OPERATIONS] delete operation failure',
+  props<{ error: string }>()
+)
 
 // categories
 export const getCategories = createAction('[CATEGORIES] get categories')
@@ -57,3 +102,6 @@ export const getAllCurrenciesFailure = createAction(
   '[CURRENCIES] get all currencies failure',
   props<{ error: string }>()
 )
+
+// reset store
+export const resetStore = createAction('[RESET STORE] reset store')

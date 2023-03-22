@@ -1,0 +1,30 @@
+<mat-form-field class="picker" appearance="fill">
+  <mat-label>Enter a date range (MM/DD/YYYY)</mat-label>
+  <mat-date-range-input [rangePicker]="picker" [formGroup]="dateForm">
+    <input matStartDate placeholder="Start date" formControlName="start" />
+    <input
+      matEndDate
+      placeholder="End date"
+      formControlName="end"
+      (dateChange)="addEvent('change', $event)" />
+  </mat-date-range-input>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
+<div class="day-card" *ngFor="let dayOperations of operations$ | async">
+  <p class="day-card_date">{{ dayOperations.date | date : 'MM-dd-yyyy' }}</p>
+  <div
+    class="day-card_operation"
+    *ngFor="let operationItem of dayOperations.operations">
+    <mat-divider></mat-divider>
+    <div class="day-card_operation-title">
+      <p>{{ operationItem.category }}</p>
+      <p>💰 {{ operationItem.sum }}</p>
+    </div>
+    <mat-hint *ngIf="operationItem.comment">
+      💬 {{ operationItem.comment }}
+    </mat-hint>
+    <mat-divider></mat-divider>
+  </div>
+</div>

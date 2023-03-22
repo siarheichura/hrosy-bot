@@ -1,6 +1,7 @@
 import { IAppState } from '../interfaces'
 
 export const initState: IAppState = {
+  operations: [],
   categories: {
     expense: [],
     income: []

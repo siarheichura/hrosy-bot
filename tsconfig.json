@@ -2,12 +2,19 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["app/components/*"],
+      "@pages/*": ["app/components/_pages/*"],
+      "@services/*": ["app/services/*"],
+      "@store/*": ["app/store/*"],
+      "@constants/*": ["app/constants/*"]
+    },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
@@ -25,7 +32,7 @@
       "ES2022",
       "dom"
     ],
-    "strictNullChecks": false
+    "strictNullChecks": false,
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

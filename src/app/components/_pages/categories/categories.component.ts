@@ -1,15 +1,22 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Store } from '@ngrx/store'
-import { map, take } from 'rxjs'
+import { map } from 'rxjs'
+import { LetModule } from '@ngrx/component'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips'
 import { MatIconModule } from '@angular/material/icon'
 import { ReactiveFormsModule } from '@angular/forms'
-import { IState } from '../../../store/store'
-import { getCategories, updateCategories } from '../../../store/actions'
-import { categoriesSelector } from '../../../store/selectors'
-import { ButtonComponent } from '../../button/button.component'
+import { IState } from '@store/store'
+import { getCategories, resetStore, updateCategories } from '@store/actions'
+import { categoriesSelector } from '@store/selectors'
+import { ButtonComponent } from '@components/button/button.component'
+import { ICategories } from '../../../interfaces'
 
 @Component({
   selector: 'app-categories',
@@ -23,10 +30,11 @@ import { ButtonComponent } from '../../button/button.component'
     MatChipsModule,
     MatIconModule,
     ReactiveFormsModule,
-    ButtonComponent
+    ButtonComponent,
+    LetModule
   ]
 })
-export class CategoriesComponent implements OnInit {
+export class CategoriesComponent implements OnInit, OnDestroy {
   categories$ = this.store.select(categoriesSelector)
 
   constructor(private store: Store<IState>) {}
@@ -88,9 +96,11 @@ export class CategoriesComponent implements OnInit {
     event.chipInput!.clear()
   }
 
-  saveHandler(): void {
-    this.categories$.pipe(take(1)).subscribe(categories => {
-      this.store.dispatch(updateCategories({ categories }))
-    })
+  saveHandler(categories: ICategories): void {
+    this.store.dispatch(updateCategories({ categories }))
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(resetStore())
   }
 }

@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { skip } from 'rxjs'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
-import { Store } from '@ngrx/store'
-import { IState } from '../../../store/store'
-import { currenciesSelector, walletsSelector } from '../../../store/selectors'
-import { getAllCurrencies, updateWallet } from '../../../store/actions'
-import { ButtonComponent } from '../../button/button.component'
 import { MatSelectModule } from '@angular/material/select'
-import { skip, take } from 'rxjs'
+import { Store } from '@ngrx/store'
+import { currenciesSelector, walletsSelector } from '@store/selectors'
+import { getAllCurrencies } from '@store/actions'
+import { IState } from '@store/store'
+import { ButtonComponent } from '../../button/button.component'
 import { IWallets } from '../../../interfaces'
 
 @Component({
@@ -59,7 +59,5 @@ export class WalletsComponent implements OnInit {
       },
       stash: { ...this.wallets.stash, currency: this.form.value.walletCurrency }
     }
-    console.log('DATA: ', data)
-    // this.store.dispatch(updateWallet())
   }
 }

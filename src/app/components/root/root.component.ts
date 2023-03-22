@@ -2,15 +2,14 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { RouterOutlet } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { trigger, transition, useAnimation } from '@angular/animations'
-import { moveFromRight, moveFromLeft } from 'ngx-router-animations'
 
-import { HeaderComponent } from '../header/header.component'
-import { HttpService } from '../../services/http.service'
-import { getWallets } from '../../store/actions'
-import { walletsSelector } from '../../store/selectors'
-import { IState } from '../../store/store'
+import { HeaderComponent } from '@components/header/header.component'
+import { HttpService } from '@services/http.service'
+import { getWallets } from '@store/actions'
+import { walletsSelector } from '@store/selectors'
+import { IState } from '@store/store'
 import { environment } from '../../../environments/environment'
+import { ROUTES_ANIMATIONS } from '@constants/constants'
 
 // @ts-ignore
 const tg = window.Telegram.WebApp
@@ -22,12 +21,7 @@ const tg = window.Telegram.WebApp
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, HeaderComponent, RouterOutlet],
-  animations: [
-    trigger('moveFromRight', [
-      transition('1 => 2', useAnimation(moveFromRight))
-    ]),
-    trigger('moveFromLeft', [transition('2 => 1', useAnimation(moveFromLeft))])
-  ]
+  animations: ROUTES_ANIMATIONS
 })
 export class RootComponent implements OnInit {
   wallets$ = this.store.select(walletsSelector)
