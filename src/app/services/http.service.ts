@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
+import { Dayjs } from 'dayjs'
 import { environment } from '../../environments/environment'
-import { ICategories, IHttpResponse, IWallets } from '../interfaces'
+import {
+  ICategories,
+  IHttpResponse,
+  IOperation,
+  IDayOperations,
+  IWallets,
+  OperationType
+} from '../interfaces'
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +29,35 @@ export class HttpService {
     if (!this.user) {
       localStorage.setItem('user', JSON.stringify({ hash, id }))
     }
+  }
+
+  //operations
+  getOperations(
+    type: OperationType,
+    start: Dayjs,
+    end: Dayjs
+  ): Observable<IHttpResponse<IDayOperations[]>> {
+    return this.http.get<IHttpResponse<IDayOperations[]>>(
+      `${
+        this.apiUrl
+      }operations/${type}/${start.toISOString()}/${end.toISOString()}`
+    )
+  }
+
+  updateOperation(
+    id: string,
+    operation: IOperation
+  ): Observable<IHttpResponse<{ message: string }>> {
+    return this.http.put<IHttpResponse<{ message: string }>>(
+      `${this.apiUrl}categories/${id}`,
+      { ...operation }
+    )
+  }
+
+  deleteOperation(id: string): Observable<IHttpResponse<{ message: string }>> {
+    return this.http.delete<IHttpResponse<{ message: string }>>(
+      `${this.apiUrl}categories/${id}`
+    )
   }
 
   // categories

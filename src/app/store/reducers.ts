@@ -1,9 +1,20 @@
 import { createReducer, on } from '@ngrx/store'
-import * as Actions from './actions'
-import { initState } from './state'
+import * as Actions from '@store/actions'
+import { initState } from '@store/state'
 
 export const reducers = createReducer(
   initState,
+
+  // operations
+  on(Actions.getOperations, state => ({ ...state })),
+  on(Actions.getOperationsSuccess, (state, action) => ({
+    ...state,
+    operations: action.operations
+  })),
+  on(Actions.getOperationsFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
 
   // categories
   on(Actions.getCategories, state => ({ ...state })),
@@ -45,5 +56,13 @@ export const reducers = createReducer(
   on(Actions.getAllCurrenciesFailure, (state, action) => ({
     ...state,
     error: action.error
+  })),
+
+  // reset store
+  on(Actions.resetStore, state => ({
+    ...state,
+    operations: [],
+    currencies: [],
+    error: null
   }))
 )

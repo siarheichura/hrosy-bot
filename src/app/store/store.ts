@@ -1,5 +1,5 @@
 import { ActionReducerMap } from '@ngrx/store'
-import { reducers } from './reducers'
+import { reducers } from '@store/reducers'
 import { IAppState } from '../interfaces'
 
 export interface IState {

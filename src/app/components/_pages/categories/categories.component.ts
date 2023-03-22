@@ -1,24 +1,21 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Store } from '@ngrx/store'
-import {
-  BehaviorSubject,
-  map,
-  Observable,
-  skip,
-  take,
-  takeLast,
-  tap
-} from 'rxjs'
+import { map } from 'rxjs'
+import { LetModule } from '@ngrx/component'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips'
 import { MatIconModule } from '@angular/material/icon'
 import { ReactiveFormsModule } from '@angular/forms'
-import { IState } from '../../../store/store'
-import { getCategories, updateCategories } from '../../../store/actions'
-import { categoriesSelector } from '../../../store/selectors'
-import { ButtonComponent } from '../../button/button.component'
-import { LetModule } from '@ngrx/component'
+import { IState } from '@store/store'
+import { getCategories, resetStore, updateCategories } from '@store/actions'
+import { categoriesSelector } from '@store/selectors'
+import { ButtonComponent } from '@components/button/button.component'
 import { ICategories } from '../../../interfaces'
 
 @Component({
@@ -26,7 +23,7 @@ import { ICategories } from '../../../interfaces'
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss'],
   standalone: true,
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -37,7 +34,7 @@ import { ICategories } from '../../../interfaces'
     LetModule
   ]
 })
-export class CategoriesComponent implements OnInit {
+export class CategoriesComponent implements OnInit, OnDestroy {
   categories$ = this.store.select(categoriesSelector)
 
   constructor(private store: Store<IState>) {}
@@ -101,5 +98,9 @@ export class CategoriesComponent implements OnInit {
 
   saveHandler(categories: ICategories): void {
     this.store.dispatch(updateCategories({ categories }))
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(resetStore())
   }
 }

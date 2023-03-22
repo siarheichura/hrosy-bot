@@ -1,7 +1,8 @@
 export enum ROUTES_ENUM {
   INDEX = '',
-  EXPENSES = 'expenses',
-  INCOMES = 'incomes',
+  OPERATIONS = 'operations',
+  EXPENSE = 'expense',
+  INCOME = 'income',
   CATEGORIES = 'categories',
   WALLETS = 'wallets',
   STATISTICS = 'statistics'

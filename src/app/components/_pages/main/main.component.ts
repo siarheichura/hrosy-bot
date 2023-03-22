@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { MainButtonComponent } from '../../main-button/main-button.component'
+import { MainButtonComponent } from '@components/main-button/main-button.component'
 import { CommonModule } from '@angular/common'
-import { MENU_BUTTONS } from '../../../constants/constants'
+import { MENU_BUTTONS } from '@constants/constants'
 
 @Component({
   selector: 'app-main',

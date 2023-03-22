@@ -1,13 +1,30 @@
 import { Injectable } from '@angular/core'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
 import { catchError, map, of, switchMap } from 'rxjs'
-import * as StoreActions from './actions'
-import { HttpService } from '../services/http.service'
+import * as StoreActions from '@store/actions'
+import { HttpService } from '@services/http.service'
 
 @Injectable()
 export class Effects {
   constructor(private actions$: Actions, private httpService: HttpService) {}
 
+  // operations
+  readonly getOperations$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.getOperations),
+      switchMap(({ options }) =>
+        this.httpService
+          .getOperations(options.type, options.start, options.end)
+          .pipe(
+            map(res =>
+              StoreActions.getOperationsSuccess({ operations: res.data })
+            )
+          )
+      )
+    )
+  )
+
+  // categories
   readonly getCategories$ = createEffect(() =>
     this.actions$.pipe(
       ofType(StoreActions.getCategories),
@@ -38,6 +55,7 @@ export class Effects {
     )
   )
 
+  // wallets
   readonly getWallets$ = createEffect(() =>
     this.actions$.pipe(
       ofType(StoreActions.getWallets),

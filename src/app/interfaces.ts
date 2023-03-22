@@ -1,4 +1,5 @@
 export interface IAppState {
+  operations: IDayOperations[]
   categories: ICategories
   wallets: IWallets
   currencies: string[]
@@ -9,6 +10,20 @@ export interface IHttpResponse<T> {
   data: T
   error?: string
   message?: string
+}
+
+export interface IOperation {
+  id: string
+  type: OperationType
+  category: string
+  sum: number
+  comment: string
+  createdAt: Date
+}
+
+export interface IDayOperations {
+  date: Date
+  operations: IOperation[]
 }
 
 export interface IWallet {
