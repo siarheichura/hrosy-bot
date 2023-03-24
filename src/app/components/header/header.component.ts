@@ -36,6 +36,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
+        console.log('Nav start event log: ', event)
         this.backButtonVisible$.next(event.url !== '/')
       }
     })
