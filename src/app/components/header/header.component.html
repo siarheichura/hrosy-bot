@@ -1,3 +1,11 @@
+<mat-icon
+  *ngIf="backButtonVisible$ | async"
+  class="header_back-btn"
+  (click)="backHandler()"
+  aria-hidden="false"
+  aria-label="Example home icon"
+  fontIcon="arrow_back_ios"></mat-icon>
+
 <div class="header_balance">
   My balance: {{ wallets.wallet.balance }}{{ wallets.wallet.currency }}
 </div>
