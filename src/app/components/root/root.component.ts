@@ -39,7 +39,6 @@ export class RootComponent implements OnInit {
 
   initTelegram() {
     console.log('TELEGRAM DATA LOG: ', tg)
-    // create session
     tg.ready()
     tg.expand()
 
