@@ -26,8 +26,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   routeSubscription: Subscription
   backButtonVisible$: Subject<boolean> = new Subject()
 
-  routeTest$: Subject<string> = new Subject<string>()
-
   constructor(
     private location: Location,
     private cdr: ChangeDetectorRef,
@@ -38,9 +36,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        console.log('Nav start event log: ', event)
-        this.routeTest$.next(event.url)
-        this.backButtonVisible$.next(event.url !== '/')
+        this.backButtonVisible$.next(event.url !== '/' && event.url[1] !== '#')
       }
     })
   }
