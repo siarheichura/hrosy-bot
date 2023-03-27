@@ -18,6 +18,11 @@ export const MENU_BUTTONS: { name: string; emoji: string; route: string }[] = [
     emoji: '⬇️',
     route: `${ROUTES_ENUM.OPERATIONS}/${ROUTES_ENUM.INCOME}`
   },
+  {
+    name: 'Transfers',
+    emoji: '↔️',
+    route: `${ROUTES_ENUM.OPERATIONS}/${ROUTES_ENUM.TRANSFER}`
+  },
   { name: 'Categories', emoji: '🏷', route: ROUTES_ENUM.CATEGORIES },
   { name: 'Wallets', emoji: '👛', route: ROUTES_ENUM.WALLETS },
   { name: 'Statistics', emoji: '📈', route: ROUTES_ENUM.STATISTICS }
