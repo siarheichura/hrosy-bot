@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { MainButtonComponent } from '@components/main-button/main-button.component'
 import { CommonModule } from '@angular/common'
+import { ActivatedRoute, Router } from '@angular/router'
 import { MENU_BUTTONS } from '@constants/constants'
 
 @Component({
@@ -9,10 +9,14 @@ import { MENU_BUTTONS } from '@constants/constants'
   styleUrls: ['./main.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, MainButtonComponent]
+  imports: [CommonModule]
 })
 export class MainComponent {
-  menuButtons = MENU_BUTTONS
+  navButtons = MENU_BUTTONS
 
-  constructor() {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
+
+  onClick(route: string): void {
+    void this.router.navigate([route], { relativeTo: this.route })
+  }
 }

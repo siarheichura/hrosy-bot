@@ -1,3 +1,9 @@
-<ng-container *ngFor="let button of menuButtons">
-  <app-main-button [data]="button"></app-main-button>
-</ng-container>
+<div
+  *ngFor="let button of navButtons"
+  class="nav-card"
+  (click)="onClick(button.route)">
+  <div class="nav-card_emoji">
+    {{ button.emoji }}
+  </div>
+  <div class="nav-card_name">{{ button.name }}</div>
+</div>

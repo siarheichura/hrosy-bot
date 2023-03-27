@@ -1,3 +1,5 @@
+<!--<app-add-operation></app-add-operation>-->
+
 <mat-form-field class="picker" appearance="fill">
   <mat-label>Enter a date range (MM/DD/YYYY)</mat-label>
   <mat-date-range-input [rangePicker]="picker" [formGroup]="dateForm">
@@ -17,7 +19,6 @@
   <div
     class="day-card_operation"
     *ngFor="let operationItem of dayOperations.operations">
-    <mat-divider></mat-divider>
     <div class="day-card_operation-title">
       <p>{{ operationItem.category }}</p>
       <p>💰 {{ operationItem.sum }}</p>
@@ -25,6 +26,5 @@
     <mat-hint *ngIf="operationItem.comment">
       💬 {{ operationItem.comment }}
     </mat-hint>
-    <mat-divider></mat-divider>
   </div>
 </div>

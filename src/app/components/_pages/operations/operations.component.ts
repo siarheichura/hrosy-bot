@@ -18,10 +18,16 @@ import {
 } from '@angular/material/datepicker'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatNativeDateModule } from '@angular/material/core'
+import { MatExpansionModule } from '@angular/material/expansion'
 import { getOperations, resetStore } from '@store/actions'
 import { operationsSelector } from '@store/selectors'
 import { IState } from '@store/store'
 import { OperationType } from '../../../interfaces'
+import { MatIconModule } from '@angular/material/icon'
+import { MatSelectModule } from '@angular/material/select'
+import { MatInputModule } from '@angular/material/input'
+import { ButtonComponent } from '@components/button/button.component'
+import { AddOperationComponent } from '@pages/operations/add-operation/add-operation.component'
 
 dayjs.extend(utc)
 
@@ -37,7 +43,13 @@ dayjs.extend(utc)
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    MatDividerModule
+    MatDividerModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatSelectModule,
+    MatInputModule,
+    ButtonComponent,
+    AddOperationComponent
   ]
 })
 export class OperationsComponent implements OnInit, OnDestroy {
@@ -46,6 +58,12 @@ export class OperationsComponent implements OnInit, OnDestroy {
   dateForm: FormGroup
   startDate: Dayjs = dayjs().utc().startOf('month')
   endDate: Dayjs = dayjs().utc().endOf('month')
+
+  wallets: { id: string; name: string; currency: string }[] = [
+    { id: '0', name: 'MainWallet', currency: 'GEL' },
+    { id: '1', name: 'Stash', currency: 'USD' },
+    { id: '2', name: 'SecondaryWallet', currency: 'EUR' }
+  ]
 
   constructor(
     private store: Store<IState>,
