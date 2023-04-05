@@ -1,0 +1,67 @@
+<mat-card [formGroup]="operationForm">
+  <mat-card-header>
+    <mat-card-title>{{ pageTitle }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field appearance="fill">
+      <mat-label>wallet</mat-label>
+      <mat-select
+        [formControlName]="formControls.WALLET"
+        (valueChange)="walletChangeHandler($event)">
+        <mat-option *ngFor="let wallet of $wallets | async" [value]="wallet.id">
+          {{ wallet.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>category</mat-label>
+      <mat-select [formControlName]="formControls.CATEGORY">
+        <mat-option
+          *ngFor="let category of $categories | async"
+          [value]="category">
+          {{ category }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>sum</mat-label>
+      <input
+        [formControlName]="formControls.SUM"
+        matInput
+        type="number"
+        placeholder="0" />
+      <span matTextSuffix>{{ currency }}</span>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>comment</mat-label>
+      <input [formControlName]="formControls.COMMENT" matInput />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>date</mat-label>
+      <input
+        matInput
+        [formControlName]="formControls.DATE"
+        [matDatepicker]="picker" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </mat-card-content>
+
+  <mat-card-actions class="card_actions">
+    <button mat-flat-button (click)="formConfirmHandler()">✅</button>
+    <button
+      *ngIf="operationId"
+      mat-flat-button
+      color="warn"
+      (click)="deleteOperationHandler()">
+      🗑️
+    </button>
+  </mat-card-actions>
+</mat-card>

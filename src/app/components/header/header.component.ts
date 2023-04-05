@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnDestroy,
   OnInit
 } from '@angular/core'
@@ -10,7 +9,9 @@ import { CommonModule, Location } from '@angular/common'
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router'
 import { MatIconModule } from '@angular/material/icon'
 import { Subject, Subscription } from 'rxjs'
-import { IWallets } from '../../interfaces'
+import { walletsSelector } from '@store/selectors'
+import { Store } from '@ngrx/store'
+import { IState } from '@store/store'
 
 @Component({
   selector: 'app-header',
@@ -21,12 +22,14 @@ import { IWallets } from '../../interfaces'
   imports: [CommonModule, MatIconModule]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  @Input() wallets: IWallets
+  wallets$ = this.store.select(walletsSelector)
 
   routeSubscription: Subscription
   backButtonVisible$: Subject<boolean> = new Subject()
+  walletsVisible$: Subject<boolean> = new Subject()
 
   constructor(
+    private store: Store<IState>,
     private location: Location,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
@@ -37,12 +40,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.backButtonVisible$.next(event.url !== '/' && event.url[1] !== '#')
+        this.walletsVisible$.next(!event.url.includes('wallets'))
       }
     })
   }
 
   backHandler() {
-    this.location.back()
+    void this.router.navigate([''])
+    // this.location.back()
   }
 
   ngOnDestroy() {

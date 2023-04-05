@@ -8,8 +8,8 @@ import {
   IHttpResponse,
   IOperation,
   IDayOperations,
-  IWallets,
-  OperationType
+  OperationType,
+  IWallet
 } from '../interfaces'
 
 @Injectable({
@@ -44,19 +44,33 @@ export class HttpService {
     )
   }
 
-  updateOperation(
-    id: string,
-    operation: IOperation
-  ): Observable<IHttpResponse<{ message: string }>> {
-    return this.http.put<IHttpResponse<{ message: string }>>(
-      `${this.apiUrl}categories/${id}`,
+  getOperation(id: string): Observable<IHttpResponse<IOperation>> {
+    return this.http.get<IHttpResponse<IOperation>>(
+      `${this.apiUrl}operations/${id}`
+    )
+  }
+
+  addOperation(
+    operation: Partial<IOperation>
+  ): Observable<IHttpResponse<IOperation>> {
+    return this.http.post<IHttpResponse<IOperation>>(
+      `${this.apiUrl}operations`,
       { ...operation }
     )
   }
 
-  deleteOperation(id: string): Observable<IHttpResponse<{ message: string }>> {
-    return this.http.delete<IHttpResponse<{ message: string }>>(
-      `${this.apiUrl}categories/${id}`
+  updateOperation(
+    operation: IOperation
+  ): Observable<IHttpResponse<IOperation>> {
+    return this.http.put<IHttpResponse<IOperation>>(
+      `${this.apiUrl}operations/${operation.id}`,
+      { ...operation }
+    )
+  }
+
+  deleteOperation(id: string): Observable<IHttpResponse<IOperation>> {
+    return this.http.delete<IHttpResponse<IOperation>>(
+      `${this.apiUrl}operations/${id}`
     )
   }
 
@@ -65,28 +79,37 @@ export class HttpService {
     return this.http.get<IHttpResponse<ICategories>>(`${this.apiUrl}categories`)
   }
 
-  updateCategories(
-    categories: ICategories
-  ): Observable<IHttpResponse<{ message: string }>> {
-    return this.http.put<IHttpResponse<{ message: string }>>(
-      `${this.apiUrl}categories`,
-      {
-        ...categories
-      }
-    )
+  updateCategories(categories: ICategories): Observable<IHttpResponse<null>> {
+    return this.http.put<IHttpResponse<null>>(`${this.apiUrl}categories`, {
+      ...categories
+    })
   }
 
   // wallets
-  getWallets(): Observable<IHttpResponse<IWallets>> {
-    return this.http.get<IHttpResponse<IWallets>>(
+  getWallets(): Observable<IHttpResponse<IWallet[]>> {
+    return this.http.get<IHttpResponse<IWallet[]>>(
       `${environment.apiUrl}wallets`
     )
   }
 
-  updateWallet(data: IWallets): Observable<IHttpResponse<{ message: string }>> {
-    return this.http.post<IHttpResponse<{ message: string }>>(
+  addWallet(data: Partial<IWallet>): Observable<IHttpResponse<IWallet>> {
+    return this.http.post<IHttpResponse<IWallet>>(
       `${environment.apiUrl}wallets`,
-      { data }
+      { ...data }
+    )
+  }
+
+  updateWallet(data: Partial<IWallet>): Observable<IHttpResponse<IWallet>> {
+    console.log('data http: ', data)
+    return this.http.put<IHttpResponse<IWallet>>(
+      `${environment.apiUrl}wallets/${data.id}`,
+      { ...data }
+    )
+  }
+
+  deleteWallet(id: string): Observable<IHttpResponse<null>> {
+    return this.http.delete<IHttpResponse<null>>(
+      `${environment.apiUrl}wallets/${id}`
     )
   }
 

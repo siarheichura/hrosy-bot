@@ -1,9 +1,12 @@
+import { Dayjs } from 'dayjs'
+
 export interface IAppState {
   operations: IDayOperations[]
+  operation: IOperation
   categories: ICategories
-  wallets: IWallets
+  wallets: IWallet[]
   currencies: string[]
-  error: string | null
+  error: string
 }
 
 export interface IHttpResponse<T> {
@@ -14,11 +17,13 @@ export interface IHttpResponse<T> {
 
 export interface IOperation {
   id: string
+  wallet: string
   type: OperationType
   category: string
   sum: number
+  currency: string
   comment: string
-  createdAt: Date
+  createdAt: Date | Dayjs | string
 }
 
 export interface IDayOperations {
@@ -27,8 +32,11 @@ export interface IDayOperations {
 }
 
 export interface IWallet {
-  balance: number
+  id: string
+  name: string
   currency: string
+  balance: number
+  isMain: boolean
 }
 
 export interface IWallets {

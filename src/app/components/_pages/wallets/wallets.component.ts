@@ -1,17 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { skip } from 'rxjs'
-import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatInputModule } from '@angular/material/input'
-import { MatAutocompleteModule } from '@angular/material/autocomplete'
-import { MatSelectModule } from '@angular/material/select'
+import { ActivatedRoute, Router } from '@angular/router'
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms'
 import { Store } from '@ngrx/store'
-import { currenciesSelector, walletsSelector } from '@store/selectors'
-import { getAllCurrencies } from '@store/actions'
+import { MatCardModule } from '@angular/material/card'
+import { MatButtonModule } from '@angular/material/button'
+import { MatIconModule } from '@angular/material/icon'
 import { IState } from '@store/store'
-import { ButtonComponent } from '../../button/button.component'
-import { IWallets } from '../../../interfaces'
+import { walletsSelector } from '@store/selectors'
 
 @Component({
   selector: 'app-wallets',
@@ -22,42 +18,28 @@ import { IWallets } from '../../../interfaces'
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ButtonComponent,
-    MatAutocompleteModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule
   ]
 })
 export class WalletsComponent implements OnInit {
-  currencies$ = this.store.select(currenciesSelector)
-  wallets$ = this.store.select(walletsSelector).pipe(skip(1))
-  wallets: IWallets
+  wallets$ = this.store.select(walletsSelector)
 
-  form: FormGroup
+  constructor(
+    private fb: FormBuilder,
+    private store: Store<IState>,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
-  constructor(private fb: FormBuilder, private store: Store<IState>) {}
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-    this.store.dispatch(getAllCurrencies())
-    this.initForm()
+  addWalletClickHandler() {
+    void this.router.navigate(['add'], { relativeTo: this.route })
   }
 
-  initForm(): void {
-    this.form = this.fb.group({
-      walletCurrency: [''],
-      stashCurrency: ['']
-    })
-    this.wallets$.subscribe(wallets => (this.wallets = wallets))
-  }
-
-  saveHandler(): void {
-    const data = {
-      wallet: {
-        ...this.wallets.wallet,
-        currency: this.form.value.walletCurrency
-      },
-      stash: { ...this.wallets.stash, currency: this.form.value.walletCurrency }
-    }
+  editWalletHandler(id: string) {
+    void this.router.navigate([`edit/${id}`], { relativeTo: this.route })
   }
 }

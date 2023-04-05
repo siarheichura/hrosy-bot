@@ -1,4 +1,7 @@
-<!--<app-add-operation></app-add-operation>-->
+<button class="add-new-btn" mat-flat-button (click)="addNewHandler()">
+  <mat-icon>add</mat-icon>
+  Add new
+</button>
 
 <mat-form-field class="picker" appearance="fill">
   <mat-label>Enter a date range (MM/DD/YYYY)</mat-label>
@@ -18,10 +21,11 @@
   <p class="day-card_date">{{ dayOperations.date | date : 'MM-dd-yyyy' }}</p>
   <div
     class="day-card_operation"
-    *ngFor="let operationItem of dayOperations.operations">
+    *ngFor="let operationItem of dayOperations.operations"
+    (click)="operationClickHandler(operationItem.id)">
     <div class="day-card_operation-title">
       <p>{{ operationItem.category }}</p>
-      <p>💰 {{ operationItem.sum }}</p>
+      <p>💰 {{ operationItem.sum }}{{ operationItem.currency }}</p>
     </div>
     <mat-hint *ngIf="operationItem.comment">
       💬 {{ operationItem.comment }}

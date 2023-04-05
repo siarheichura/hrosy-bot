@@ -6,13 +6,12 @@ import { Store } from '@ngrx/store'
 import { HeaderComponent } from '@components/header/header.component'
 import { HttpService } from '@services/http.service'
 import { getWallets } from '@store/actions'
-import { walletsSelector } from '@store/selectors'
 import { IState } from '@store/store'
 import { environment } from '../../../environments/environment'
 import { ROUTES_ANIMATIONS } from '@constants/constants'
 
 // @ts-ignore
-const tg = window.Telegram.WebApp
+export const tg = window.Telegram.WebApp
 
 @Component({
   selector: 'app-root',
@@ -24,8 +23,6 @@ const tg = window.Telegram.WebApp
   animations: ROUTES_ANIMATIONS
 })
 export class RootComponent implements OnInit {
-  wallets$ = this.store.select(walletsSelector)
-
   constructor(private httpService: HttpService, private store: Store<IState>) {}
 
   ngOnInit(): void {
@@ -50,5 +47,13 @@ export class RootComponent implements OnInit {
     } else {
       this.httpService.setUserToLocalStorage('dev_hash', 5958132991)
     }
+  }
+
+  showAlert() {
+    tg.showAlert('Hi alert')
+  }
+
+  showConfirm() {
+    tg.showConfirm('Hi confirm')
   }
 }

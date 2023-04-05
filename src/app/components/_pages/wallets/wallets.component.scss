@@ -1,37 +1,20 @@
+@import "src/variables";
+
 :host {
-  mat-form-field {
-    width: 100%;
-  }
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
-  .wallets-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
 
-    &_control {
-      width: 100%;
-      display: flex;
+  .card {
+    background-color: $bg-color;
 
-      label {
-        width: 70%;
-      }
-
-      input {
-        width: 30%;
-      }
-    }
-
-    &_buttons {
+    &_content {
       width: 100%;
       display: flex;
       justify-content: space-between;
-      gap: 5px;
-
-      app-button {
-        width: 50%;
-      }
+      font-size: 1.3rem;
     }
   }
 }

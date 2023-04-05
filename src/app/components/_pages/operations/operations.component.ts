@@ -5,7 +5,7 @@ import {
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Store } from '@ngrx/store'
 import { Dayjs } from 'dayjs'
@@ -27,7 +27,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatSelectModule } from '@angular/material/select'
 import { MatInputModule } from '@angular/material/input'
 import { ButtonComponent } from '@components/button/button.component'
-import { AddOperationComponent } from '@pages/operations/add-operation/add-operation.component'
+import { MatButtonModule } from '@angular/material/button'
 
 dayjs.extend(utc)
 
@@ -49,7 +49,8 @@ dayjs.extend(utc)
     MatSelectModule,
     MatInputModule,
     ButtonComponent,
-    AddOperationComponent
+    MatButtonModule,
+    MatIconModule
   ]
 })
 export class OperationsComponent implements OnInit, OnDestroy {
@@ -59,16 +60,11 @@ export class OperationsComponent implements OnInit, OnDestroy {
   startDate: Dayjs = dayjs().utc().startOf('month')
   endDate: Dayjs = dayjs().utc().endOf('month')
 
-  wallets: { id: string; name: string; currency: string }[] = [
-    { id: '0', name: 'MainWallet', currency: 'GEL' },
-    { id: '1', name: 'Stash', currency: 'USD' },
-    { id: '2', name: 'SecondaryWallet', currency: 'EUR' }
-  ]
-
   constructor(
     private store: Store<IState>,
     private fb: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -102,6 +98,14 @@ export class OperationsComponent implements OnInit, OnDestroy {
         })
       )
     }
+  }
+
+  addNewHandler() {
+    void this.router.navigate(['add'], { relativeTo: this.route })
+  }
+
+  operationClickHandler(id: string) {
+    void this.router.navigate([`edit/${id}`], { relativeTo: this.route })
   }
 
   ngOnDestroy() {
