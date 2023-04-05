@@ -11,6 +11,6 @@ export enum ROUTES_ENUM {
 
 export enum OPERATION_TYPES {
   INCOME = 'income',
-  EXPENSE = 'expense',
-  TRANSFER = 'transfer'
+  EXPENSE = 'expense'
+  // TRANSFER = 'transfer'
 }

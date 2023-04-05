@@ -1,31 +1,14 @@
-<!--<app-wallet-form-->
-<!--  [wallets]="wallets$ | async"-->
-<!--  [currencies]="currencies$ | async"></app-wallet-form>-->
+<button mat-button (click)="addWalletClickHandler()">
+  <mat-icon>add</mat-icon>
+  Add new
+</button>
 
-<form class="example-form" [formGroup]="form">
-  <mat-form-field appearance="fill">
-    <mat-label>Wallet currency</mat-label>
-    <mat-select formControlName="walletCurrency">
-      <mat-option
-        *ngFor="let currency of currencies$ | async"
-        [value]="currency"
-        >{{ currency }}</mat-option
-      >
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Stash currency</mat-label>
-    <mat-select formControlName="stashCurrency">
-      <mat-option
-        *ngFor="let currency of currencies$ | async"
-        [value]="currency"
-        >{{ currency }}</mat-option
-      >
-    </mat-select>
-  </mat-form-field>
-
-  <div>
-    <app-button [name]="'Save'" (click)="saveHandler()"></app-button>
-  </div>
-</form>
+<mat-card
+  class="card"
+  *ngFor="let wallet of wallets$ | async"
+  (click)="editWalletHandler(wallet.id)">
+  <mat-card-content class="card_content">
+    <p>{{ wallet.name }}</p>
+    <p>{{ wallet.balance }}{{ wallet.currency }}</p>
+  </mat-card-content>
+</mat-card>

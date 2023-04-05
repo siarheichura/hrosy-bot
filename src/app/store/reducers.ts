@@ -5,13 +5,44 @@ import { initState } from '@store/state'
 export const reducers = createReducer(
   initState,
 
-  // operations
+  // OPERATIONS
+  // get operations
   on(Actions.getOperations, state => ({ ...state })),
   on(Actions.getOperationsSuccess, (state, action) => ({
     ...state,
     operations: action.operations
   })),
   on(Actions.getOperationsFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  //get operation
+  on(Actions.getOperation, state => ({ ...state })),
+  on(Actions.getOperationSuccess, (state, action) => ({
+    ...state,
+    operation: action.operation
+  })),
+  on(Actions.getOperationFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  // add operation
+  on(Actions.addOperation, state => ({ ...state })),
+  on(Actions.addOperationFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  // update operation
+  on(Actions.updateOperation, state => ({ ...state })),
+  on(Actions.updateOperationSuccess, state => ({ ...state })),
+  on(Actions.updateOperationFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  // delete operation
+  on(Actions.deleteOperation, state => ({ ...state })),
+  on(Actions.deleteOperationSuccess, state => ({ ...state })),
+  on(Actions.deleteOperationFailure, (state, action) => ({
     ...state,
     error: action.error
   })),
@@ -31,10 +62,10 @@ export const reducers = createReducer(
     ...state,
     categories: action.categories
   })),
-  on(Actions.updateWalletFailure, (state, action) => ({
-    ...state,
-    error: action.error
-  })),
+  // on(Actions.updateWalletFailure, (state, action) => ({
+  //   ...state,
+  //   error: action.error
+  // })),
 
   // wallets
   on(Actions.getWallets, state => ({ ...state })),
@@ -46,6 +77,17 @@ export const reducers = createReducer(
     ...state,
     error: action.error
   })),
+  on(Actions.addWallet, state => ({ ...state })),
+  on(Actions.addWalletFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  on(Actions.updateWallet, state => ({ ...state })),
+  on(Actions.updateWalletFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  on(Actions.deleteWallet, state => ({ ...state })),
 
   // currencies
   on(Actions.getAllCurrencies, state => ({ ...state })),
@@ -57,6 +99,14 @@ export const reducers = createReducer(
     ...state,
     error: action.error
   })),
+
+  // catch error
+  // on(Actions.catchError, (state, action) => ({
+  //   ...state,
+  //   error: action.type
+  // })),
+
+  on(Actions.resetError, state => ({ ...state, error: null })),
 
   // reset store
   on(Actions.resetStore, state => ({

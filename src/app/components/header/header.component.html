@@ -1,13 +1,14 @@
 <mat-icon
-  *ngIf="backButtonVisible$ | async"
   class="header_back-btn"
+  *ngIf="backButtonVisible$ | async"
   (click)="backHandler()"
   aria-hidden="false"
   fontIcon="arrow_back_ios"></mat-icon>
 
-<div class="header_balance">
-  My balance: {{ wallets.wallet.balance }}{{ wallets.wallet.currency }}
-</div>
-<div class="header_stash">
-  My stash: {{ wallets.stash.balance }}{{ wallets.stash.currency }}
-</div>
+<ng-container *ngIf="walletsVisible$ | async">
+  <div
+    *ngFor="let wallet of wallets$ | async"
+    [ngClass]="{ 'header_main-wallet': wallet.isMain }">
+    {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}
+  </div>
+</ng-container>

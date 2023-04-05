@@ -1,0 +1,13 @@
+<!--<span class="example-pizza-party" matSnackBarLabel> Are you sure?? </span>-->
+<span class="example-pizza-party" matSnackBarLabel> {{ message }} </span>
+<span matSnackBarActions>
+  <button mat-button matSnackBarAction (click)="snackBarRef.dismiss()">
+    no 👎
+  </button>
+  <button
+    mat-button
+    matSnackBarAction
+    (click)="snackBarRef.dismissWithAction()">
+    yes 👍
+  </button>
+</span>

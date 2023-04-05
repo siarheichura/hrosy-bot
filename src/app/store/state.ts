@@ -2,20 +2,12 @@ import { IAppState } from '../interfaces'
 
 export const initState: IAppState = {
   operations: [],
+  operation: null,
   categories: {
     expense: [],
     income: []
   },
-  wallets: {
-    wallet: {
-      balance: 0,
-      currency: ''
-    },
-    stash: {
-      balance: 0,
-      currency: ''
-    }
-  },
+  wallets: [],
   currencies: [],
   error: null
 }
