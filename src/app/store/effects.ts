@@ -21,7 +21,7 @@ export class Effects {
       ofType(StoreActions.getOperations),
       switchMap(({ options }) =>
         this.httpService
-          .getOperations(options.type, options.start, options.end)
+          .getOperations(options)
           .pipe(
             map(res =>
               StoreActions.getOperationsSuccess({ operations: res.data })
@@ -52,6 +52,7 @@ export class Effects {
       switchMap(({ operation }) =>
         this.httpService.addOperation(operation).pipe(
           mergeMap(res => {
+            this.snackBarService.printInfoSnackBar('success', res.message)
             void this.router.navigate([`operations/${res.data.type}`])
             return [
               StoreActions.addOperationSuccess(),

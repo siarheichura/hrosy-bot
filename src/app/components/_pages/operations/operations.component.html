@@ -1,21 +1,65 @@
-<button class="add-new-btn" mat-flat-button (click)="addNewHandler()">
-  <mat-icon>add</mat-icon>
-  Add new
-</button>
-
 <mat-form-field class="picker" appearance="fill">
   <mat-label>Enter a date range (MM/DD/YYYY)</mat-label>
-  <mat-date-range-input [rangePicker]="picker" [formGroup]="dateForm">
+  <mat-date-range-input [rangePicker]="picker" [formGroup]="periodForm">
     <input matStartDate placeholder="Start date" formControlName="start" />
-    <input
-      matEndDate
-      placeholder="End date"
-      formControlName="end"
-      (dateChange)="addEvent('change', $event)" />
+    <input matEndDate placeholder="End date" formControlName="end" />
   </mat-date-range-input>
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-date-range-picker #picker></mat-date-range-picker>
 </mat-form-field>
+
+<div class="menu">
+  <div class="menu_left">
+    <button mat-icon-button (click)="sortClickHandler()">
+      <mat-icon>unfold_more</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="isFilterMenuExpanded = !isFilterMenuExpanded">
+      <mat-icon>filter_alt</mat-icon>
+    </button>
+  </div>
+  <div class="menu_right">
+    <button mat-icon-button (click)="addNewHandler()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="filters" *ngIf="isFilterMenuExpanded" [formGroup]="filtersForm">
+  <mat-form-field appearance="fill" class="filters_select">
+    <mat-label>wallets</mat-label>
+    <mat-select formControlName="wallets" multiple>
+      <mat-option *ngFor="let wallet of wallets$ | async" [value]="wallet.id">
+        {{ wallet.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="filters_select">
+    <mat-label>categories</mat-label>
+    <mat-select formControlName="categories" multiple>
+      <mat-option
+        *ngFor="let category of categories$ | async"
+        [value]="category">
+        {{ category }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="filters_input">
+    <mat-label>Search by comment</mat-label>
+    <input matInput formControlName="comment" />
+    <button mat-icon-button matSuffix>
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+
+<!--<button class="add-new-btn" mat-flat-button (click)="addNewHandler()">-->
+<!--  <mat-icon>add</mat-icon>-->
+<!--  Add new-->
+<!--</button>-->
 
 <div class="day-card" *ngFor="let dayOperations of operations$ | async">
   <p class="day-card_date">{{ dayOperations.date | date : 'MM-dd-yyyy' }}</p>
