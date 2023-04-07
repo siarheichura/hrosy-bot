@@ -40,6 +40,7 @@ import {
   updateOperation
 } from '@store/actions'
 import { IOperation, OperationType } from '../../../interfaces'
+import { ButtonComponent } from '@components/button/button.component'
 
 enum FORM_CONTROLS {
   WALLET = 'wallet',
@@ -64,7 +65,8 @@ enum FORM_CONTROLS {
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    ButtonComponent
   ]
 })
 export class AddEditOperationComponent implements OnInit, OnDestroy {
