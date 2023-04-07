@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { Dayjs } from 'dayjs'
+import * as dayjs from 'dayjs'
 import { environment } from '../../environments/environment'
 import {
   ICategories,
   IHttpResponse,
   IOperation,
   IDayOperations,
-  OperationType,
-  IWallet
+  IWallet,
+  IGetOperationOptions
 } from '../interfaces'
 
 @Injectable({
@@ -31,16 +31,23 @@ export class HttpService {
     }
   }
 
-  //operations
+  // operations
   getOperations(
-    type: OperationType,
-    start: Dayjs,
-    end: Dayjs
+    options: IGetOperationOptions
   ): Observable<IHttpResponse<IDayOperations[]>> {
+    const { type, filters, period } = options
+    const { sort, wallets, categories, comment } = filters
+    const start = period.start.format(environment.dateFormat)
+    const end = period.end.format(environment.dateFormat)
+
+    const queryString =
+      `?sort=${sort}` +
+      (wallets?.length ? `&wallets=${wallets}` : '') +
+      (categories?.length ? `&categories=${categories}` : '') +
+      (comment ? `&comment=${comment}` : '')
+
     return this.http.get<IHttpResponse<IDayOperations[]>>(
-      `${
-        this.apiUrl
-      }operations/${type}/${start.toISOString()}/${end.toISOString()}`
+      `${this.apiUrl}operations/${type}/${start}/${end}${queryString}`
     )
   }
 
@@ -55,7 +62,10 @@ export class HttpService {
   ): Observable<IHttpResponse<IOperation>> {
     return this.http.post<IHttpResponse<IOperation>>(
       `${this.apiUrl}operations`,
-      { ...operation }
+      {
+        ...operation,
+        createdAt: dayjs(operation.createdAt).format(environment.dateFormat)
+      }
     )
   }
 
@@ -64,7 +74,10 @@ export class HttpService {
   ): Observable<IHttpResponse<IOperation>> {
     return this.http.put<IHttpResponse<IOperation>>(
       `${this.apiUrl}operations/${operation.id}`,
-      { ...operation }
+      {
+        ...operation,
+        createdAt: dayjs(operation.createdAt).format(environment.dateFormat)
+      }
     )
   }
 

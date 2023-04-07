@@ -10,8 +10,8 @@ import { IState } from '@store/store'
 import { environment } from '../../../environments/environment'
 import { ROUTES_ANIMATIONS } from '@constants/constants'
 
-// @ts-ignore
-export const tg = window.Telegram.WebApp
+declare var Telegram: any
+export const tg = Telegram.WebApp
 
 @Component({
   selector: 'app-root',

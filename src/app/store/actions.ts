@@ -3,15 +3,14 @@ import {
   ICategories,
   IOperation,
   IDayOperations,
-  OperationType,
-  IWallet
+  IWallet,
+  IGetOperationOptions
 } from '../interfaces'
-import { Dayjs } from 'dayjs'
 
 // operations
 export const getOperations = createAction(
   '[OPERATIONS] get operations',
-  props<{ options: { type: OperationType; start: Dayjs; end: Dayjs } }>()
+  props<{ options: IGetOperationOptions }>()
 )
 export const getOperationsSuccess = createAction(
   '[OPERATIONS] get operations success',

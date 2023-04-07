@@ -39,16 +39,22 @@ export interface IWallet {
   isMain: boolean
 }
 
-export interface IWallets {
-  wallet: IWallet
-  stash: IWallet
-}
-
 export interface ICategories {
   expense: string[]
   income: string[]
 }
 
-// --------------------------------------- //
+export interface IGetOperationOptions {
+  type: OperationType
+  period: { start: Dayjs; end: Dayjs }
+  filters: {
+    sort: Sort
+    wallets?: string[]
+    categories?: string[]
+    comment?: string
+  }
+}
 
+// --------------------------------------- //
+export type Sort = 1 | -1
 export type OperationType = 'income' | 'expense'

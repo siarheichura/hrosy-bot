@@ -6,31 +6,49 @@ import {
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  FormControl
+} from '@angular/forms'
+import { debounceTime, map } from 'rxjs'
 import { Store } from '@ngrx/store'
-import { Dayjs } from 'dayjs'
 import * as dayjs from 'dayjs'
 import * as utc from 'dayjs/plugin/utc'
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { MatFormFieldModule } from '@angular/material/form-field'
-import {
-  MatDatepickerInputEvent,
-  MatDatepickerModule
-} from '@angular/material/datepicker'
+import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatExpansionModule } from '@angular/material/expansion'
-import { getOperations, resetStore } from '@store/actions'
-import { operationsSelector } from '@store/selectors'
-import { IState } from '@store/store'
-import { OperationType } from '../../../interfaces'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSelectModule } from '@angular/material/select'
 import { MatInputModule } from '@angular/material/input'
-import { ButtonComponent } from '@components/button/button.component'
 import { MatButtonModule } from '@angular/material/button'
+import { getCategories, getOperations, resetStore } from '@store/actions'
+import {
+  categoriesSelector,
+  operationsSelector,
+  walletsSelector
+} from '@store/selectors'
+import { IState } from '@store/store'
+import { OperationType, Sort } from '../../../interfaces'
 
 dayjs.extend(utc)
 
+interface IFiltersForm {
+  wallets: FormControl<string[]>
+  categories: FormControl<string[]>
+  comment: FormControl<string>
+}
+
+interface IPeriodForm {
+  start: FormControl<Date>
+  end: FormControl<Date>
+}
+
+@UntilDestroy()
 @Component({
   selector: 'app-operations',
   templateUrl: './operations.component.html',
@@ -48,17 +66,21 @@ dayjs.extend(utc)
     MatIconModule,
     MatSelectModule,
     MatInputModule,
-    ButtonComponent,
     MatButtonModule,
     MatIconModule
   ]
 })
 export class OperationsComponent implements OnInit, OnDestroy {
-  operations$ = this.store.select(operationsSelector)
   type: OperationType = this.route.snapshot.params.type
-  dateForm: FormGroup
-  startDate: Dayjs = dayjs().utc().startOf('month')
-  endDate: Dayjs = dayjs().utc().endOf('month')
+  isFilterMenuExpanded: boolean = false
+  sort: Sort = 1
+  periodForm: FormGroup<IPeriodForm>
+  filtersForm: FormGroup<IFiltersForm>
+  operations$ = this.store.select(operationsSelector)
+  wallets$ = this.store.select(walletsSelector)
+  categories$ = this.store
+    .select(categoriesSelector)
+    .pipe(map(categories => categories[this.type]))
 
   constructor(
     private store: Store<IState>,
@@ -68,36 +90,60 @@ export class OperationsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.initPeriodForm()
+    this.initFiltersForm()
+
+    this.dispatchGetOperations()
+    this.store.dispatch(getCategories())
+  }
+
+  initPeriodForm() {
+    this.periodForm = this.fb.group({
+      start: [dayjs().utc().startOf('month').toDate()],
+      end: [dayjs().utc().endOf('month').toDate()]
+    })
+
+    this.periodForm.valueChanges
+      .pipe(untilDestroyed(this), debounceTime(500))
+      .subscribe(value => {
+        if (value.start && value.end) {
+          this.dispatchGetOperations()
+        }
+      })
+  }
+
+  initFiltersForm() {
+    this.filtersForm = this.fb.group({
+      wallets: [],
+      categories: [],
+      comment: []
+    })
+
+    this.filtersForm.valueChanges
+      .pipe(untilDestroyed(this), debounceTime(500))
+      .subscribe(() => this.dispatchGetOperations())
+  }
+
+  dispatchGetOperations() {
+    const { start, end } = this.periodForm.value
+
     this.store.dispatch(
       getOperations({
         options: {
           type: this.type,
-          start: this.startDate,
-          end: this.endDate
+          period: {
+            start: dayjs(start),
+            end: dayjs(end)
+          },
+          filters: { sort: this.sort, ...this.filtersForm.value }
         }
       })
     )
-
-    this.dateForm = this.fb.group({
-      start: [this.startDate.toDate()],
-      end: [this.endDate.toDate()]
-    })
   }
 
-  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    const { start, end } = this.dateForm.value
-
-    if (start && end) {
-      this.store.dispatch(
-        getOperations({
-          options: {
-            type: this.type,
-            start: dayjs(start).utc().startOf('day'),
-            end: dayjs(end).utc().endOf('day')
-          }
-        })
-      )
-    }
+  sortClickHandler() {
+    this.sort = this.sort === 1 ? -1 : 1
+    this.dispatchGetOperations()
   }
 
   addNewHandler() {

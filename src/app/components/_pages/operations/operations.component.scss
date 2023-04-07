@@ -1,9 +1,39 @@
 @import "src/variables";
 
 :host {
-  position: relative;
-  height: 100vh;
   width: 100%;
+
+  mat-form-field {
+    margin-bottom: -1.25em;
+  }
+
+  .menu {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      color: $button-bg-color;
+    }
+
+    &_left {
+
+    }
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
+
+    &_select {
+      width: 49%;
+    }
+
+    &_input {
+      margin-top: 2%;
+      width: 100%;
+    }
+  }
 
   .add-new-btn {
     width: 100%;
@@ -13,6 +43,7 @@
   .picker {
     width: 100%;
     color: black;
+    margin-bottom: -1.25em;
   }
 
   .day-card {
