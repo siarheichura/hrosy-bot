@@ -55,13 +55,10 @@
   </mat-card-content>
 
   <mat-card-actions class="card_actions">
-    <button mat-flat-button (click)="formConfirmHandler()">✅</button>
-    <button
-      *ngIf="operationId"
-      mat-flat-button
-      color="warn"
-      (click)="deleteOperationHandler()">
-      🗑️
-    </button>
+    <app-button name="✅" (buttonClick)="formConfirmHandler()"></app-button>
+    <app-button
+      name="🗑️"
+      (buttonClick)="deleteOperationHandler()"
+      *ngIf="operationId"></app-button>
   </mat-card-actions>
 </mat-card>
