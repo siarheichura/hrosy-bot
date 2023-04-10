@@ -229,6 +229,25 @@ export class Effects {
     )
   )
 
+  // statistics
+  readonly getStatistics$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.getStatistics),
+      switchMap(({ options }) =>
+        this.httpService
+          .getStatistics(options.type, options.walletId, options.period)
+          .pipe(
+            map(res =>
+              StoreActions.getStatisticsSuccess({ statistics: res.data })
+            ),
+            catchError(error =>
+              of(StoreActions.getStatisticsFailure({ error: error.message }))
+            )
+          )
+      )
+    )
+  )
+
   // currencies
   readonly getAllCurrencies$ = createEffect(() =>
     this.actions$.pipe(

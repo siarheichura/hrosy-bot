@@ -9,7 +9,10 @@ import {
   IOperation,
   IDayOperations,
   IWallet,
-  IGetOperationOptions
+  IGetOperationOptions,
+  IStatistics,
+  OperationType,
+  IPeriod
 } from '../interfaces'
 
 @Injectable({
@@ -123,6 +126,20 @@ export class HttpService {
   deleteWallet(id: string): Observable<IHttpResponse<null>> {
     return this.http.delete<IHttpResponse<null>>(
       `${environment.apiUrl}wallets/${id}`
+    )
+  }
+
+  // statistics
+  getStatistics(
+    type: OperationType,
+    walletId: string,
+    period: IPeriod
+  ): Observable<IHttpResponse<IStatistics>> {
+    const start = period.start.format(environment.dateFormat)
+    const end = period.end.format(environment.dateFormat)
+
+    return this.http.get<IHttpResponse<IStatistics>>(
+      `${environment.apiUrl}statistics/${type}/${walletId}/${start}/${end}`
     )
   }
 

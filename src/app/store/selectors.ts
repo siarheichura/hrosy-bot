@@ -22,9 +22,12 @@ export const walletsSelector = createSelector(
   state => state.wallets
 )
 
+export const statisticsSelector = createSelector(
+  selectFeature,
+  state => state.statistics
+)
+
 export const currenciesSelector = createSelector(
   selectFeature,
   state => state.currencies
 )
-
-// export const errorSelector = createSelector(selectFeature, state => state.error)

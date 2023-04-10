@@ -1,1 +1,46 @@
-<p>statistics works!</p>
+<mat-form-field class="picker" appearance="fill">
+  <mat-label>Enter a date range (MM/DD/YYYY)</mat-label>
+  <mat-date-range-input [rangePicker]="picker" [formGroup]="periodForm">
+    <input matStartDate placeholder="Start date" formControlName="start" />
+    <input matEndDate placeholder="End date" formControlName="end" />
+  </mat-date-range-input>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
+<mat-hint>Type</mat-hint>
+<mat-button-toggle-group
+  name="fontStyle"
+  aria-label="Font Style"
+  [formControl]="typeControl">
+  <mat-button-toggle [value]="types.EXPENSE">Expense</mat-button-toggle>
+  <mat-button-toggle [value]="types.INCOME">Income</mat-button-toggle>
+</mat-button-toggle-group>
+
+<mat-hint>Wallet</mat-hint>
+<mat-button-toggle-group
+  name="fontStyle"
+  aria-label="Font Style"
+  [formControl]="walletControl">
+  <mat-button-toggle
+    *ngFor="let wallet of wallets$ | async"
+    [value]="wallet.id">
+    {{ wallet.name }}
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
+<div class="stat" *ngIf="statistics$ | async as statistics">
+  <div *ngFor="let i of statistics.report" class="stat_item">
+    <div class="stat_item-title">
+      <p>{{ i.category }}</p>
+      <p>
+        {{ i.sum }}{{ i.currency }} ({{
+          i.sum / statistics.total | percent : '1.2-2'
+        }})
+      </p>
+    </div>
+    <mat-progress-bar
+      mode="determinate"
+      [value]="(i.sum / statistics.total) * 100"></mat-progress-bar>
+  </div>
+</div>

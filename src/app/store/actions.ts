@@ -4,7 +4,10 @@ import {
   IOperation,
   IDayOperations,
   IWallet,
-  IGetOperationOptions
+  IGetOperationOptions,
+  OperationType,
+  IPeriod,
+  IStatistics
 } from '../interfaces'
 
 // operations
@@ -127,6 +130,22 @@ export const deleteWalletSuccess = createAction(
 )
 export const deleteWalletFailure = createAction(
   '[WALLETS] delete wallet failure',
+  props<{ error: string }>()
+)
+
+// statistics
+export const getStatistics = createAction(
+  '[STATISTICS] get statistics',
+  props<{
+    options: { type: OperationType; walletId: string; period: IPeriod }
+  }>()
+)
+export const getStatisticsSuccess = createAction(
+  '[STATISTICS] get statistics success',
+  props<{ statistics: IStatistics }>()
+)
+export const getStatisticsFailure = createAction(
+  '[STATISTICS] get statistics failure',
   props<{ error: string }>()
 )
 

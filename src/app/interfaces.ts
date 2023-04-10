@@ -6,6 +6,7 @@ export interface IAppState {
   categories: ICategories
   wallets: IWallet[]
   currencies: string[]
+  statistics: IStatistics
   error: string
 }
 
@@ -46,13 +47,23 @@ export interface ICategories {
 
 export interface IGetOperationOptions {
   type: OperationType
-  period: { start: Dayjs; end: Dayjs }
+  period: IPeriod
   filters: {
     sort: Sort
     wallets?: string[]
     categories?: string[]
     comment?: string
   }
+}
+
+export interface IPeriod {
+  start: Dayjs
+  end: Dayjs
+}
+
+export interface IStatistics {
+  report: { category: string; sum: number; currency: string }[]
+  total: number
 }
 
 // --------------------------------------- //
