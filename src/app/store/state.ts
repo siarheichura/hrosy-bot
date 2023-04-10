@@ -9,5 +9,6 @@ export const initState: IAppState = {
   },
   wallets: [],
   currencies: [],
+  statistics: null,
   error: null
 }

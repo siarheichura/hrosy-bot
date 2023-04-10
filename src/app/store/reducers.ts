@@ -62,10 +62,6 @@ export const reducers = createReducer(
     ...state,
     categories: action.categories
   })),
-  // on(Actions.updateWalletFailure, (state, action) => ({
-  //   ...state,
-  //   error: action.error
-  // })),
 
   // wallets
   on(Actions.getWallets, state => ({ ...state })),
@@ -89,6 +85,17 @@ export const reducers = createReducer(
   })),
   on(Actions.deleteWallet, state => ({ ...state })),
 
+  // statistics
+  on(Actions.getStatistics, state => ({ ...state })),
+  on(Actions.getStatisticsSuccess, (state, action) => ({
+    ...state,
+    statistics: action.statistics
+  })),
+  on(Actions.getStatisticsFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+
   // currencies
   on(Actions.getAllCurrencies, state => ({ ...state })),
   on(Actions.getAllCurrenciesSuccess, (state, action) => ({
@@ -99,12 +106,6 @@ export const reducers = createReducer(
     ...state,
     error: action.error
   })),
-
-  // catch error
-  // on(Actions.catchError, (state, action) => ({
-  //   ...state,
-  //   error: action.type
-  // })),
 
   on(Actions.resetError, state => ({ ...state, error: null })),
 
