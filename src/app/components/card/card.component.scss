@@ -1,0 +1,30 @@
+@import "src/variables";
+
+:host {
+  mat-card {
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 5px;
+  }
+
+  mat-card-content {
+    width: calc(100% + 100px);
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-content-wrap {
+    width: 100%;
+  }
+
+  .card-actions {
+    width: 100px;
+    display: flex;
+
+    button {
+      color: $button-bg-color;
+    }
+  }
+}

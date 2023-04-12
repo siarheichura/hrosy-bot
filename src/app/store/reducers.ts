@@ -85,6 +85,46 @@ export const reducers = createReducer(
   })),
   on(Actions.deleteWallet, state => ({ ...state })),
 
+  // transfers
+  on(Actions.getTransfers, state => ({ ...state })),
+  on(Actions.getTransfersSuccess, (state, action) => ({
+    ...state,
+    transfers: action.transfers
+  })),
+  on(Actions.getTransfersFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  on(Actions.addTransfer, state => ({ ...state })),
+  on(Actions.addTransferSuccess, (state, action) => ({
+    ...state,
+    transfers: [...state.transfers, action.transfer]
+  })),
+  on(Actions.addTransferFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  on(Actions.updateTransfer, state => ({ ...state })),
+  on(Actions.updateTransferSuccess, (state, action) => ({
+    ...state,
+    transfers: state.transfers.map(t =>
+      t.id === action.transfer.id ? action.transfer : t
+    )
+  })),
+  on(Actions.updateTransferFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+  on(Actions.deleteTransfer, state => ({ ...state })),
+  on(Actions.deleteTransferSuccess, (state, action) => ({
+    ...state,
+    transfers: state.transfers.filter(t => t.id !== action.transfer.id)
+  })),
+  on(Actions.deleteTransferFailure, (state, action) => ({
+    ...state,
+    error: action.error
+  })),
+
   // statistics
   on(Actions.getStatistics, state => ({ ...state })),
   on(Actions.getStatisticsSuccess, (state, action) => ({

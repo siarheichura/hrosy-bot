@@ -1,1 +1,30 @@
-<p>transfers works!</p>
+<app-date-range-picker
+  (valueChanges)="changePeriodHandler($event)"></app-date-range-picker>
+
+<div class="menu">
+  <button mat-icon-button (click)="addTransferHandler()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<app-card
+  *ngFor="let transfer of $transfers | async"
+  [id]="transfer.id"
+  (edit)="editTransferHandler($event)"
+  (delete)="deleteTransferHandler($event)">
+  <div class="card_content">
+    <div>
+      <p>{{ transfer.from }}</p>
+      <p>{{ transfer.sumFrom }}</p>
+    </div>
+
+    <div>
+      <p class="rate">{{ transfer.rate }}</p>
+      <mat-icon>trending_flat</mat-icon>
+    </div>
+    <div>
+      <p>{{ transfer.to }}</p>
+      <p>{{ transfer.sumTo }}</p>
+    </div>
+  </div>
+</app-card>

@@ -13,6 +13,7 @@ import { RootComponent } from '@components/root/root.component'
 import { AuthInterceptor } from '@services/auth.interceptor'
 import { environment } from './environments/environment'
 import { routes } from './routes'
+import { MatNativeDateModule } from '@angular/material/core'
 
 if (environment.production) {
   enableProdMode()
@@ -24,7 +25,8 @@ bootstrapApplication(RootComponent, {
     importProvidersFrom(
       HttpClientModule,
       BrowserAnimationsModule,
-      MatSnackBarModule
+      MatSnackBarModule,
+      MatNativeDateModule
     ),
     { provide: HTTP_INTERCEPTORS, multi: true, useClass: AuthInterceptor },
     provideStore(reducer),

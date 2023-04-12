@@ -7,6 +7,7 @@ export interface IAppState {
   wallets: IWallet[]
   currencies: string[]
   statistics: IStatistics
+  transfers: ITransfer[]
   error: string
 }
 
@@ -64,6 +65,16 @@ export interface IPeriod {
 export interface IStatistics {
   report: { category: string; sum: number; currency: string }[]
   total: number
+}
+
+export interface ITransfer {
+  id: string
+  from: string // wallet id
+  to: string // wallet id
+  sumFrom: number
+  sumTo: number
+  rate: number
+  createdAt: Dayjs
 }
 
 // --------------------------------------- //

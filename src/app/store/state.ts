@@ -10,5 +10,6 @@ export const initState: IAppState = {
   wallets: [],
   currencies: [],
   statistics: null,
+  transfers: null,
   error: null
 }

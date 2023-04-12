@@ -229,6 +229,76 @@ export class Effects {
     )
   )
 
+  // transfers
+  readonly getTransfers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.getTransfers),
+      switchMap(({ period }) =>
+        this.httpService.getTransfers(period).pipe(
+          map(res => StoreActions.getTransfersSuccess({ transfers: res.data })),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.getTransfersFailure({ error: err.error }))
+          })
+        )
+      )
+    )
+  )
+
+  readonly addTransfer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.addTransfer),
+      switchMap(({ transfer }) =>
+        this.httpService.addTransfer(transfer).pipe(
+          map(res => {
+            this.snackBarService.printInfoSnackBar('success', res.message)
+            return StoreActions.addTransferSuccess({ transfer: res.data })
+          }),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.addTransferFailure({ error: err.message }))
+          })
+        )
+      )
+    )
+  )
+
+  readonly updateTransfer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.updateTransfer),
+      switchMap(({ transfer }) =>
+        this.httpService.updateTransfer(transfer).pipe(
+          map(res => {
+            this.snackBarService.printInfoSnackBar('success', res.message)
+            return StoreActions.updateTransferSuccess({ transfer: res.data })
+          }),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.updateTransferFailure({ error: err.error }))
+          })
+        )
+      )
+    )
+  )
+
+  readonly deleteTransfer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.deleteTransfer),
+      switchMap(({ id }) =>
+        this.httpService.deleteTransfer(id).pipe(
+          map(res => {
+            this.snackBarService.printInfoSnackBar('success', res.message)
+            return StoreActions.deleteTransferSuccess({ transfer: res.data })
+          }),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.deleteTransferFailure({ error: err.error }))
+          })
+        )
+      )
+    )
+  )
+
   // statistics
   readonly getStatistics$ = createEffect(() =>
     this.actions$.pipe(

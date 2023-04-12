@@ -6,6 +6,8 @@ import {
 } from '@angular/animations'
 import { moveFromLeft, moveFromRight } from 'ngx-router-animations'
 import { ROUTES_ENUM } from './enums'
+import { IPeriod } from '../interfaces'
+import * as dayjs from 'dayjs'
 
 export const MENU_BUTTONS: { name: string; emoji: string; route: string }[] = [
   {
@@ -32,3 +34,8 @@ export const ROUTES_ANIMATIONS: AnimationTriggerMetadata[] = [
     transition(`* => index`, useAnimation(moveFromLeft))
   ])
 ]
+
+export const INITIAL_MONTH_PERIOD: IPeriod = {
+  start: dayjs().startOf('month'),
+  end: dayjs().endOf('month')
+}

@@ -12,7 +12,8 @@ import {
   IGetOperationOptions,
   IStatistics,
   OperationType,
-  IPeriod
+  IPeriod,
+  ITransfer
 } from '../interfaces'
 
 @Injectable({
@@ -126,6 +127,41 @@ export class HttpService {
   deleteWallet(id: string): Observable<IHttpResponse<null>> {
     return this.http.delete<IHttpResponse<null>>(
       `${environment.apiUrl}wallets/${id}`
+    )
+  }
+
+  // transfers
+  getTransfers(period: IPeriod): Observable<IHttpResponse<ITransfer[]>> {
+    const start = period.start.format(environment.dateFormat)
+    const end = period.end.format(environment.dateFormat)
+
+    return this.http.get<IHttpResponse<ITransfer[]>>(
+      `${this.apiUrl}transfers/${start}/${end}`
+    )
+  }
+
+  addTransfer(
+    transfer: Partial<ITransfer>
+  ): Observable<IHttpResponse<ITransfer>> {
+    return this.http.post<IHttpResponse<ITransfer>>(`${this.apiUrl}transfers`, {
+      ...transfer
+    })
+  }
+
+  updateTransfer(
+    transfer: Partial<ITransfer>
+  ): Observable<IHttpResponse<ITransfer>> {
+    return this.http.put<IHttpResponse<ITransfer>>(
+      `${this.apiUrl}transfers/${transfer.id}`,
+      {
+        ...transfer
+      }
+    )
+  }
+
+  deleteTransfer(id: string): Observable<IHttpResponse<ITransfer>> {
+    return this.http.delete<IHttpResponse<ITransfer>>(
+      `${this.apiUrl}transfers/${id}`
     )
   }
 

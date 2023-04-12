@@ -7,7 +7,8 @@ import {
   IGetOperationOptions,
   OperationType,
   IPeriod,
-  IStatistics
+  IStatistics,
+  ITransfer
 } from '../interfaces'
 
 // operations
@@ -130,6 +131,56 @@ export const deleteWalletSuccess = createAction(
 )
 export const deleteWalletFailure = createAction(
   '[WALLETS] delete wallet failure',
+  props<{ error: string }>()
+)
+
+// transfers
+export const getTransfers = createAction(
+  '[TRANSFERS] get transfers',
+  props<{ period: IPeriod }>()
+)
+export const getTransfersSuccess = createAction(
+  '[TRANSFERS] get transfers success',
+  props<{ transfers: ITransfer[] }>()
+)
+export const getTransfersFailure = createAction(
+  '[TRANSFERS] get transfers failure',
+  props<{ error: string }>()
+)
+export const addTransfer = createAction(
+  '[TRANSFERS] add transfer',
+  props<{ transfer: Partial<ITransfer> }>()
+)
+export const addTransferSuccess = createAction(
+  '[TRANSFERS] add transfer success',
+  props<{ transfer: ITransfer }>()
+)
+export const addTransferFailure = createAction(
+  '[TRANSFERS] add transfer failure',
+  props<{ error: string }>()
+)
+export const updateTransfer = createAction(
+  '[TRANSFERS] update transfer',
+  props<{ transfer: ITransfer }>()
+)
+export const updateTransferSuccess = createAction(
+  '[TRANSFERS] update transfer success',
+  props<{ transfer: ITransfer }>()
+)
+export const updateTransferFailure = createAction(
+  '[TRANSFERS] update transfer failure',
+  props<{ error: string }>()
+)
+export const deleteTransfer = createAction(
+  '[TRANSFERS] delete transfer',
+  props<{ id: string }>()
+)
+export const deleteTransferSuccess = createAction(
+  '[TRANSFERS] delete transfer success',
+  props<{ transfer: ITransfer }>()
+)
+export const deleteTransferFailure = createAction(
+  '[TRANSFERS] delete transfer failure',
   props<{ error: string }>()
 )
 

@@ -1,0 +1,43 @@
+<h1 mat-dialog-title>{{ dialogData.title }}</h1>
+<div mat-dialog-content *ngrxLet="wallets$ as wallets" [formGroup]="form">
+  <div class="form-row">
+    <mat-form-field appearance="fill">
+      <mat-label>from</mat-label>
+      <mat-select formControlName="from">
+        <mat-option *ngFor="let wallet of wallets" [value]="wallet.id">
+          {{ wallet.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-icon (click)="reverseWallets()">trending_flat</mat-icon>
+
+    <mat-form-field appearance="fill">
+      <mat-label>to</mat-label>
+      <mat-select formControlName="to">
+        <mat-option *ngFor="let wallet of wallets" [value]="wallet.id">
+          {{ wallet.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+    <mat-form-field appearance="fill">
+      <input matInput type="number" placeholder="0" formControlName="sumFrom" />
+      <span matTextSuffix>{{ currencyFrom }}</span>
+    </mat-form-field>
+
+    <mat-icon>trending_flat</mat-icon>
+
+    <mat-form-field appearance="fill">
+      <input matInput type="number" placeholder="0" formControlName="sumTo" />
+      <span matTextSuffix>{{ currencyTo }}</span>
+    </mat-form-field>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button (click)="submitHandler()">Ok</button>
+</div>

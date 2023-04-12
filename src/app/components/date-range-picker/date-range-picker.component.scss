@@ -1,0 +1,11 @@
+@import "src/variables";
+
+:host {
+  width: 100%;
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: -1.25rem;
+    color: $text-color;
+  }
+}
