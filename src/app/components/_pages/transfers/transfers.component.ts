@@ -23,7 +23,7 @@ import {
   updateTransfer
 } from '@store/actions'
 import { DateRangePickerComponent } from '@components/date-range-picker/date-range-picker.component'
-import { IPeriod } from '../../../interfaces'
+import { IPeriod } from '@app//interfaces'
 import { INITIAL_MONTH_PERIOD } from '@constants/constants'
 import { MatInputModule } from '@angular/material/input'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'

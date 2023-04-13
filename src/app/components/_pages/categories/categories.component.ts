@@ -16,7 +16,7 @@ import { IState } from '@store/store'
 import { getCategories, resetStore, updateCategories } from '@store/actions'
 import { categoriesSelector } from '@store/selectors'
 import { ButtonComponent } from '@components/button/button.component'
-import { ICategories } from '../../../interfaces'
+import { ICategories } from '@app/interfaces'
 
 @Component({
   selector: 'app-categories',

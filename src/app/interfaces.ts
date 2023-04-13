@@ -25,7 +25,7 @@ export interface IOperation {
   sum: number
   currency: string
   comment: string
-  createdAt: Date | Dayjs | string
+  createdAt: Date
 }
 
 export interface IDayOperations {

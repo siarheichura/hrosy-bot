@@ -20,7 +20,7 @@ import { IState } from '@store/store'
 import { getStatistics } from '@store/actions'
 import { statisticsSelector, walletsSelector } from '@store/selectors'
 import { OPERATION_TYPES } from '@constants/enums'
-import { OperationType } from '../../../interfaces'
+import { OperationType } from '@app/interfaces'
 
 dayjs.extend(utc)
 

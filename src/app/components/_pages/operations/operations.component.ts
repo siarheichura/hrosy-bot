@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   OnDestroy,
   OnInit
 } from '@angular/core'
@@ -12,10 +13,8 @@ import {
   FormGroup,
   FormControl
 } from '@angular/forms'
-import { debounceTime, map } from 'rxjs'
+import { debounceTime, map, take } from 'rxjs'
 import { Store } from '@ngrx/store'
-import * as dayjs from 'dayjs'
-import * as utc from 'dayjs/plugin/utc'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatDatepickerModule } from '@angular/material/datepicker'
@@ -26,26 +25,32 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatSelectModule } from '@angular/material/select'
 import { MatInputModule } from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button'
-import { getCategories, getOperations, resetStore } from '@store/actions'
+import {
+  addOperation,
+  deleteOperation,
+  getCategories,
+  getOperation,
+  getOperations,
+  resetStore,
+  updateOperation
+} from '@store/actions'
 import {
   categoriesSelector,
   operationsSelector,
   walletsSelector
 } from '@store/selectors'
 import { IState } from '@store/store'
-import { OperationType, Sort } from '../../../interfaces'
-
-dayjs.extend(utc)
+import { IPeriod, OperationType, Sort } from '@app/interfaces'
+import { DateRangePickerComponent } from '@components/date-range-picker/date-range-picker.component'
+import { CardComponent } from '@components/card/card.component'
+import { INITIAL_MONTH_PERIOD } from '@constants/constants'
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'
+import { AddEditOperationComponent } from '@pages/add-edit-operation/add-edit-operation.component'
 
 interface IFiltersForm {
   wallets: FormControl<string[]>
   categories: FormControl<string[]>
   comment: FormControl<string>
-}
-
-interface IPeriodForm {
-  start: FormControl<Date>
-  end: FormControl<Date>
 }
 
 @UntilDestroy()
@@ -67,14 +72,22 @@ interface IPeriodForm {
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    DateRangePickerComponent,
+    CardComponent,
+    MatDialogModule
   ]
 })
 export class OperationsComponent implements OnInit, OnDestroy {
+  store: Store<IState> = inject(Store)
+  fb = inject(FormBuilder)
+  route = inject(ActivatedRoute)
+  router = inject(Router)
+  dialog = inject(MatDialog)
+
   type: OperationType = this.route.snapshot.params.type
   isFilterMenuExpanded: boolean = false
   sort: Sort = 1
-  periodForm: FormGroup<IPeriodForm>
   filtersForm: FormGroup<IFiltersForm>
   operations$ = this.store.select(operationsSelector)
   wallets$ = this.store.select(walletsSelector)
@@ -82,34 +95,43 @@ export class OperationsComponent implements OnInit, OnDestroy {
     .select(categoriesSelector)
     .pipe(map(categories => categories[this.type]))
 
-  constructor(
-    private store: Store<IState>,
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
-
   ngOnInit() {
-    this.initPeriodForm()
     this.initFiltersForm()
-
     this.dispatchGetOperations()
-    this.store.dispatch(getCategories())
   }
 
-  initPeriodForm() {
-    this.periodForm = this.fb.group({
-      start: [dayjs().utc().startOf('month').toDate()],
-      end: [dayjs().utc().endOf('month').toDate()]
-    })
+  openAddEditDialog(title: string, id?: string) {
+    this.store.dispatch(getCategories())
+    if (id) {
+      this.store.dispatch(getOperation({ id }))
+    }
+    const data = { title, type: this.type, id }
 
-    this.periodForm.valueChanges
-      .pipe(untilDestroyed(this), debounceTime(500))
-      .subscribe(value => {
-        if (value.start && value.end) {
-          this.dispatchGetOperations()
+    this.dialog
+      .open(AddEditOperationComponent, { data })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(data => {
+        if (data) {
+          if (data.id) {
+            this.store.dispatch(updateOperation({ operation: data }))
+          } else {
+            this.store.dispatch(addOperation({ operation: data }))
+          }
         }
       })
+  }
+
+  changePeriodHandler(period: IPeriod) {
+    this.store.dispatch(
+      getOperations({
+        options: {
+          type: this.type,
+          period,
+          filters: { sort: this.sort, ...this.filtersForm.value }
+        }
+      })
+    )
   }
 
   initFiltersForm() {
@@ -125,16 +147,11 @@ export class OperationsComponent implements OnInit, OnDestroy {
   }
 
   dispatchGetOperations() {
-    const { start, end } = this.periodForm.value
-
     this.store.dispatch(
       getOperations({
         options: {
           type: this.type,
-          period: {
-            start: dayjs(start),
-            end: dayjs(end)
-          },
+          period: INITIAL_MONTH_PERIOD,
           filters: { sort: this.sort, ...this.filtersForm.value }
         }
       })
@@ -147,11 +164,15 @@ export class OperationsComponent implements OnInit, OnDestroy {
   }
 
   addNewHandler() {
-    void this.router.navigate(['add'], { relativeTo: this.route })
+    this.openAddEditDialog('Add operation')
   }
 
-  operationClickHandler(id: string) {
-    void this.router.navigate([`edit/${id}`], { relativeTo: this.route })
+  editOperationHandler(id: string) {
+    this.openAddEditDialog('Edit operation', id)
+  }
+
+  deleteOperationHandler(id: string) {
+    this.store.dispatch(deleteOperation({ id }))
   }
 
   ngOnDestroy() {

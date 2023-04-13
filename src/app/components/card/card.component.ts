@@ -39,8 +39,8 @@ import { MatButtonModule } from '@angular/material/button'
   ]
 })
 export class CardComponent implements OnInit {
-  @Output() edit = new EventEmitter()
-  @Output() delete = new EventEmitter()
+  @Output() edit = new EventEmitter<string>()
+  @Output() delete = new EventEmitter<string>()
   @Input() id: string
   translated = false
 

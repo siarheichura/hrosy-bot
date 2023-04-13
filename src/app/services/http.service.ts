@@ -14,7 +14,7 @@ import {
   OperationType,
   IPeriod,
   ITransfer
-} from '../interfaces'
+} from '@app/interfaces'
 
 @Injectable({
   providedIn: 'root'

@@ -1,12 +1,5 @@
-import {
-  AnimationTriggerMetadata,
-  transition,
-  trigger,
-  useAnimation
-} from '@angular/animations'
-import { moveFromLeft, moveFromRight } from 'ngx-router-animations'
 import { ROUTES_ENUM } from './enums'
-import { IPeriod } from '../interfaces'
+import { IPeriod } from '@app/interfaces'
 import * as dayjs from 'dayjs'
 
 export const MENU_BUTTONS: { name: string; emoji: string; route: string }[] = [
@@ -24,15 +17,6 @@ export const MENU_BUTTONS: { name: string; emoji: string; route: string }[] = [
   { name: 'Categories', emoji: '🏷', route: ROUTES_ENUM.CATEGORIES },
   { name: 'Wallets', emoji: '👛', route: ROUTES_ENUM.WALLETS },
   { name: 'Statistics', emoji: '📈', route: ROUTES_ENUM.STATISTICS }
-]
-
-export const ROUTES_ANIMATIONS: AnimationTriggerMetadata[] = [
-  trigger('moveFromRight', [
-    transition(`index => *`, useAnimation(moveFromRight))
-  ]),
-  trigger('moveFromLeft', [
-    transition(`* => index`, useAnimation(moveFromLeft))
-  ])
 ]
 
 export const INITIAL_MONTH_PERIOD: IPeriod = {

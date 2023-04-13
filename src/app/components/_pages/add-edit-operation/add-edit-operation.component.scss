@@ -1,17 +1,13 @@
 @import "src/variables";
 
 :host {
-  mat-card {
-    background-color: $bg-color;
-    color: $text-color;
-  }
-
   mat-form-field {
     width: 100%;
   }
 
-  .card_actions {
-    display: flex;
-    gap: 5px;
+  .actions {
+    button {
+      font-size: 1.5rem;
+    }
   }
 }

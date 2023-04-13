@@ -3,10 +3,6 @@
 :host {
   width: 100%;
 
-  mat-form-field {
-    margin-bottom: -1.25em;
-  }
-
   .menu {
     display: flex;
     justify-content: space-between;
@@ -21,6 +17,10 @@
     flex-wrap: wrap;
     gap: 2%;
 
+    mat-form-field {
+      margin-bottom: -1.25em;
+    }
+
     &_select {
       width: 49%;
     }
@@ -31,35 +31,27 @@
     }
   }
 
-  .add-new-btn {
-    width: 100%;
-    font-weight: 700;
-  }
-
-  .picker {
-    width: 100%;
-    color: black;
-    margin-bottom: -1.25em;
-  }
-
   .day-card {
-    padding: 10px;
+    padding: 5px 10px;
     margin-bottom: 5px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    border-radius: 10px;
+    gap: 5px;
     background-color: $bg-color;
     color: $text-color;
 
     &_date {
-      font-weight: 700;
+      font-weight: 600;
+      text-align: center;
     }
 
     &_operation {
       padding: 5px 10px;
       display: flex;
       flex-direction: column;
+      background-color: $secondary-bg-color;
+      color: $text-color;
+      border-radius: 5px;
 
       &-title {
         display: flex;

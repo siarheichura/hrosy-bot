@@ -5,6 +5,8 @@
     overflow: hidden;
     cursor: pointer;
     margin-bottom: 5px;
+    background-color: $bg-color;
+    color: $text-color;
   }
 
   mat-card-content {
