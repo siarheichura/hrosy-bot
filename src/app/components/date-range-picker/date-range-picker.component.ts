@@ -20,6 +20,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { debounceTime } from 'rxjs'
 import { INITIAL_MONTH_PERIOD } from '@constants/constants'
 import * as dayjs from 'dayjs'
+import { IPeriod } from '@app/interfaces'
 
 interface IForm {
   start: FormControl<Date>
@@ -44,7 +45,7 @@ interface IForm {
 export class DateRangePickerComponent implements OnInit {
   fb = inject(FormBuilder)
 
-  @Output() valueChanges = new EventEmitter()
+  @Output() valueChanges = new EventEmitter<IPeriod>()
 
   form: FormGroup<IForm>
 

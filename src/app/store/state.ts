@@ -1,4 +1,4 @@
-import { IAppState } from '../interfaces'
+import { IAppState } from '@app/interfaces'
 
 export const initState: IAppState = {
   operations: [],

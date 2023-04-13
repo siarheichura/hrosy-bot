@@ -1,17 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
+  inject,
   OnInit
 } from '@angular/core'
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms'
 import { CommonModule } from '@angular/common'
-import { ActivatedRoute } from '@angular/router'
+import { combineLatestWith, map, tap } from 'rxjs'
 
 import { MatCardModule } from '@angular/material/card'
 import { MatFormFieldModule } from '@angular/material/form-field'
@@ -20,36 +21,34 @@ import { MatInputModule } from '@angular/material/input'
 import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatButtonModule } from '@angular/material/button'
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef
+} from '@angular/material/dialog'
 
-import { Dayjs } from 'dayjs'
 import * as dayjs from 'dayjs'
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 
 import { Store } from '@ngrx/store'
-import { map, Subscription } from 'rxjs'
 import { IState } from '@store/store'
 import {
   categoriesSelector,
   operationSelector,
   walletsSelector
 } from '@store/selectors'
-import {
-  addOperation,
-  deleteOperation,
-  getCategories,
-  getOperation,
-  updateOperation
-} from '@store/actions'
-import { IOperation, OperationType } from '../../../interfaces'
-import { ButtonComponent } from '@components/button/button.component'
 
-enum FORM_CONTROLS {
-  WALLET = 'wallet',
-  CATEGORY = 'category',
-  SUM = 'sum',
-  COMMENT = 'comment',
-  DATE = 'date'
+import { OperationType } from '@app/interfaces'
+
+interface IForm {
+  wallet: FormControl<string>
+  category: FormControl<string>
+  sum: FormControl<number>
+  comment: FormControl<string>
+  date: FormControl<Date>
 }
 
+@UntilDestroy()
 @Component({
   selector: 'app-add-edit-operation',
   templateUrl: './add-edit-operation.component.html',
@@ -58,115 +57,86 @@ enum FORM_CONTROLS {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    MatCardModule,
     ReactiveFormsModule,
+    MatCardModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
-    ButtonComponent
+    MatDialogModule
   ]
 })
-export class AddEditOperationComponent implements OnInit, OnDestroy {
-  type: OperationType = this.route.snapshot.params.type
-  operationId: string | undefined = this.route.snapshot.params.id
-  pageTitle: string = this.operationId ? 'Edit operation' : 'Add operation'
-  operationForm: FormGroup
-  formControls = FORM_CONTROLS
-  currDate: Dayjs = dayjs()
+export class AddEditOperationComponent implements OnInit {
+  // injections
+  store: Store<IState> = inject(Store)
+  fb = inject(FormBuilder)
+  dialogRef = inject(MatDialogRef)
+  dialogData: { title: string; type: OperationType; id?: string } =
+    inject(MAT_DIALOG_DATA)
+
+  // properties
   currency: string
 
-  $wallets = this.store.select(walletsSelector)
-  walletsSubscription: Subscription
-  $operation = this.store.select(operationSelector)
-  operationSubscription: Subscription
+  // forms
+  form: FormGroup<IForm> = this.fb.group({
+    wallet: ['', [Validators.required]],
+    category: ['', [Validators.required]],
+    sum: [0, [Validators.required, Validators.min(0.01)]],
+    comment: [''],
+    date: [dayjs().toDate(), [Validators.required]]
+  })
+
+  // streams
+  $wallets = this.store.select(walletsSelector).pipe(
+    tap(wallets => {
+      if (!this.dialogData.id) {
+        this.form.patchValue({ wallet: wallets.find(w => w.isMain)?.id })
+      }
+    })
+  )
+  $operation = this.store
+    .select(operationSelector)
+    .pipe(
+      untilDestroyed(this),
+      tap(operation => {
+        if (this.dialogData.id) {
+          this.form.patchValue({
+            wallet: operation?.wallet,
+            category: operation?.category,
+            sum: operation?.sum,
+            comment: operation?.comment,
+            date: operation?.createdAt
+          })
+        }
+      })
+    )
+    .subscribe()
   $categories = this.store
     .select(categoriesSelector)
-    .pipe(map(categories => categories[this.type]))
-
-  constructor(
-    private store: Store<IState>,
-    private route: ActivatedRoute,
-    private fb: FormBuilder
-  ) {}
+    .pipe(map(categories => categories[this.dialogData.type]))
 
   ngOnInit() {
-    this.store.dispatch(getCategories())
+    this.initWalletChangeHandler()
+  }
 
-    this.operationForm = this.fb.group({
-      [this.formControls.WALLET]: ['', [Validators.required]],
-      [this.formControls.CATEGORY]: ['', [Validators.required]],
-      [this.formControls.SUM]: [
-        '',
-        [Validators.required, Validators.min(0.01)]
-      ],
-      [this.formControls.COMMENT]: [''],
-      [this.formControls.DATE]: [this.currDate.toDate(), [Validators.required]]
-    })
-
-    if (this.operationId) {
-      this.store.dispatch(getOperation({ id: this.operationId }))
-      this.operationSubscription = this.$operation.subscribe(operation => {
-        this.operationForm.patchValue({
-          [this.formControls.WALLET]: operation?.wallet,
-          [this.formControls.CATEGORY]: operation?.category,
-          [this.formControls.SUM]: operation?.sum,
-          [this.formControls.COMMENT]: operation?.comment,
-          [this.formControls.DATE]: operation?.createdAt
-        })
+  initWalletChangeHandler() {
+    this.form.controls.wallet.valueChanges
+      .pipe(untilDestroyed(this), combineLatestWith(this.$wallets))
+      .subscribe(([value, wallets]) => {
+        this.currency = wallets.find(w => w.id === value)?.currency
       })
-    } else {
-      this.walletsSubscription = this.$wallets.subscribe(wallets => {
-        const mainWallet = wallets.find(w => w.isMain)
-        this.operationForm.patchValue({
-          [this.formControls.WALLET]: mainWallet?.id
-        })
-        this.currency = mainWallet?.currency
+  }
+
+  submitHandler() {
+    if (this.form.valid) {
+      this.dialogRef.close({
+        ...this.form.value,
+        id: this.dialogData.id,
+        type: this.dialogData.type,
+        currency: this.currency
       })
     }
-  }
-
-  formConfirmHandler() {
-    if (!this.operationForm.valid) {
-      this.operationForm.markAllAsTouched()
-    }
-
-    if (this.operationForm.valid && this.operationForm.touched) {
-      const { wallet, category, sum, comment, date } = this.operationForm.value
-      const operationObj: IOperation = {
-        id: this.operationId,
-        wallet,
-        type: this.type,
-        category,
-        sum,
-        comment,
-        currency: this.currency,
-        createdAt: dayjs(date).toISOString()
-      }
-
-      if (this.operationId) {
-        this.store.dispatch(updateOperation({ operation: operationObj }))
-      } else {
-        this.store.dispatch(addOperation({ operation: operationObj }))
-      }
-    }
-  }
-
-  deleteOperationHandler() {
-    this.store.dispatch(deleteOperation({ id: this.operationId }))
-  }
-
-  walletChangeHandler(id: string) {
-    this.walletsSubscription = this.$wallets.subscribe(wallets => {
-      const wallet = wallets.find(w => w.id === id)
-      this.currency = wallet.currency
-    })
-  }
-
-  ngOnDestroy() {
-    this.walletsSubscription?.unsubscribe()
-    this.operationSubscription?.unsubscribe()
   }
 }

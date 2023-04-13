@@ -1,12 +1,5 @@
-<mat-form-field class="picker" appearance="fill">
-  <mat-label>Enter a date range (MM/DD/YYYY)</mat-label>
-  <mat-date-range-input [rangePicker]="picker" [formGroup]="periodForm">
-    <input matStartDate placeholder="Start date" formControlName="start" />
-    <input matEndDate placeholder="End date" formControlName="end" />
-  </mat-date-range-input>
-  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-date-range-picker #picker></mat-date-range-picker>
-</mat-form-field>
+<app-date-range-picker
+  (valueChanges)="changePeriodHandler($event)"></app-date-range-picker>
 
 <div class="menu">
   <div class="menu_left">
@@ -56,23 +49,18 @@
   </mat-form-field>
 </div>
 
-<!--<button class="add-new-btn" mat-flat-button (click)="addNewHandler()">-->
-<!--  <mat-icon>add</mat-icon>-->
-<!--  Add new-->
-<!--</button>-->
-
 <div class="day-card" *ngFor="let dayOperations of operations$ | async">
-  <p class="day-card_date">{{ dayOperations.date | date : 'MM-dd-yyyy' }}</p>
-  <div
-    class="day-card_operation"
-    *ngFor="let operationItem of dayOperations.operations"
-    (click)="operationClickHandler(operationItem.id)">
+  <mat-divider></mat-divider>
+  <p class="day-card_date">📅 {{ dayOperations.date | date : 'MM/dd/yyyy' }}</p>
+  <app-card
+    *ngFor="let operation of dayOperations.operations"
+    [id]="operation.id"
+    (edit)="editOperationHandler($event)"
+    (delete)="deleteOperationHandler($event)">
     <div class="day-card_operation-title">
-      <p>{{ operationItem.category }}</p>
-      <p>💰 {{ operationItem.sum }}{{ operationItem.currency }}</p>
+      <p>{{ operation.category }}</p>
+      <p>💰 {{ operation.sum }}{{ operation.currency }}</p>
     </div>
-    <mat-hint *ngIf="operationItem.comment">
-      💬 {{ operationItem.comment }}
-    </mat-hint>
-  </div>
+    <mat-hint *ngIf="operation.comment"> 💬 {{ operation.comment }} </mat-hint>
+  </app-card>
 </div>

@@ -9,7 +9,7 @@ import {
   IPeriod,
   IStatistics,
   ITransfer
-} from '../interfaces'
+} from '@app//interfaces'
 
 // operations
 export const getOperations = createAction(
