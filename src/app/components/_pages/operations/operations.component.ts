@@ -13,7 +13,7 @@ import {
   FormGroup,
   FormControl
 } from '@angular/forms'
-import { debounceTime, map, take } from 'rxjs'
+import { debounceTime, map, of, take } from 'rxjs'
 import { Store } from '@ngrx/store'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { MatFormFieldModule } from '@angular/material/form-field'
@@ -89,6 +89,7 @@ export class OperationsComponent implements OnInit, OnDestroy {
   isFilterMenuExpanded: boolean = false
   sort: Sort = 1
   filtersForm: FormGroup<IFiltersForm>
+
   operations$ = this.store.select(operationsSelector)
   wallets$ = this.store.select(walletsSelector)
   categories$ = this.store

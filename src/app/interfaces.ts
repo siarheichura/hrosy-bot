@@ -3,11 +3,13 @@ import { Dayjs } from 'dayjs'
 export interface IAppState {
   operations: IDayOperations[]
   operation: IOperation
+  options: IGetOperationOptions
   categories: ICategories
   wallets: IWallet[]
   currencies: string[]
   statistics: IStatistics
   transfers: ITransfer[]
+  loading: boolean
   error: string
 }
 
@@ -25,11 +27,11 @@ export interface IOperation {
   sum: number
   currency: string
   comment: string
-  createdAt: Date
+  createdAt: string
 }
 
 export interface IDayOperations {
-  date: Date
+  date: string
   operations: IOperation[]
 }
 
