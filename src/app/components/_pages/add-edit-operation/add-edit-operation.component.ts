@@ -19,7 +19,6 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatSelectModule } from '@angular/material/select'
 import { MatInputModule } from '@angular/material/input'
 import { MatDatepickerModule } from '@angular/material/datepicker'
-import { MatNativeDateModule } from '@angular/material/core'
 import { MatButtonModule } from '@angular/material/button'
 import {
   MAT_DIALOG_DATA,
@@ -27,7 +26,6 @@ import {
   MatDialogRef
 } from '@angular/material/dialog'
 
-import * as dayjs from 'dayjs'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 
 import { Store } from '@ngrx/store'
@@ -45,7 +43,7 @@ interface IForm {
   category: FormControl<string>
   sum: FormControl<number>
   comment: FormControl<string>
-  date: FormControl<Date>
+  createdAt: FormControl<Date>
 }
 
 @UntilDestroy()
@@ -63,7 +61,6 @@ interface IForm {
     MatSelectModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     MatButtonModule,
     MatDialogModule
   ]
@@ -85,7 +82,7 @@ export class AddEditOperationComponent implements OnInit {
     category: ['', [Validators.required]],
     sum: [0, [Validators.required, Validators.min(0.01)]],
     comment: [''],
-    date: [dayjs().toDate(), [Validators.required]]
+    createdAt: [new Date(), [Validators.required]]
   })
 
   // streams
@@ -107,7 +104,7 @@ export class AddEditOperationComponent implements OnInit {
             category: operation?.category,
             sum: operation?.sum,
             comment: operation?.comment,
-            date: operation?.createdAt
+            createdAt: new Date(operation?.createdAt)
           })
         }
       })

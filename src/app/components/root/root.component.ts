@@ -14,6 +14,8 @@ import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
 import { getWallets } from '@store/actions'
 import { environment } from '../../../environments/environment'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { loadingSelector } from '@store/selectors'
 
 declare var Telegram: any
 export const tg = Telegram.WebApp
@@ -24,7 +26,12 @@ export const tg = Telegram.WebApp
   styleUrls: ['./root.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, HeaderComponent, RouterOutlet],
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    RouterOutlet,
+    MatProgressSpinnerModule
+  ],
   animations: [
     trigger('moveFromRight', [
       transition(`index => *`, useAnimation(moveFromRight))
@@ -37,6 +44,8 @@ export const tg = Telegram.WebApp
 export class RootComponent implements OnInit {
   httpService = inject(HttpService)
   store = inject(Store<IState>)
+
+  loading$ = this.store.select(loadingSelector)
 
   ngOnInit(): void {
     this.initTelegram()
@@ -61,4 +70,6 @@ export class RootComponent implements OnInit {
       this.httpService.setUserToLocalStorage('dev_hash', 5958132991)
     }
   }
+
+  protected readonly transition = transition
 }

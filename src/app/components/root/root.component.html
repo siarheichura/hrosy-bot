@@ -5,3 +5,8 @@
   [@moveFromRight]="getStateForAnimation(o)">
   <router-outlet #o="outlet"></router-outlet>
 </div>
+
+<div class="spinner" *ngIf="loading$ | async">
+  <!--  <mat-spinner *ngIf="true"></mat-spinner>-->
+  <mat-spinner></mat-spinner>
+</div>

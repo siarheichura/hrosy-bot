@@ -33,7 +33,7 @@ export const getOperationSuccess = createAction(
   props<{ operation: IOperation }>()
 )
 export const getOperationFailure = createAction(
-  '[OPERATIONS] grt operation failure',
+  '[OPERATIONS] get operation failure',
   props<{ error: string }>()
 )
 export const addOperation = createAction(
@@ -41,7 +41,8 @@ export const addOperation = createAction(
   props<{ operation: Partial<IOperation> }>()
 )
 export const addOperationSuccess = createAction(
-  '[OPERATIONS] add operation success'
+  '[OPERATIONS] add operation success',
+  props<{ operation: IOperation }>()
 )
 export const addOperationFailure = createAction(
   '[OPERATIONS] add operation failure',
@@ -211,13 +212,10 @@ export const getAllCurrenciesFailure = createAction(
   props<{ error: string }>()
 )
 
-// catch error
-export const catchError = createAction(
-  '[ERROR] catch error',
-  props<{ error: string }>()
+export const toggleLoading = createAction(
+  '[LOADING] toggle loading',
+  props<{ loading: boolean }>()
 )
+
 // reset store
 export const resetStore = createAction('[RESET] reset store')
-
-// reset error
-export const resetError = createAction('[ERROR] reset error')

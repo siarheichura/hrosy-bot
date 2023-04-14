@@ -1,19 +1,29 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
-import { catchError, map, mergeMap, of, switchMap } from 'rxjs'
+import {
+  catchError,
+  combineLatestWith,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+  take
+} from 'rxjs'
 import * as StoreActions from '@store/actions'
 import { HttpService } from '@services/http.service'
 import { SnackBarService } from '@services/snack-bar.service'
 import { Router } from '@angular/router'
+import { Store } from '@ngrx/store'
+import { IState } from '@store/store'
+import { operationsOptionsSelector } from '@store/selectors'
 
 @Injectable()
 export class Effects {
-  constructor(
-    private actions$: Actions,
-    private httpService: HttpService,
-    private router: Router,
-    private snackBarService: SnackBarService
-  ) {}
+  actions$ = inject(Actions)
+  store: Store<IState> = inject(Store)
+  httpService = inject(HttpService)
+  router = inject(Router)
+  snackBarService = inject(SnackBarService)
 
   // operations
   readonly getOperations$ = createEffect(() =>
@@ -51,11 +61,12 @@ export class Effects {
       ofType(StoreActions.addOperation),
       switchMap(({ operation }) =>
         this.httpService.addOperation(operation).pipe(
-          mergeMap(res => {
+          combineLatestWith(this.store.select(operationsOptionsSelector)),
+          take(1),
+          mergeMap(([res, options]) => {
             this.snackBarService.printInfoSnackBar('success', res.message)
-            void this.router.navigate([`operations/${res.data.type}`])
             return [
-              StoreActions.addOperationSuccess(),
+              StoreActions.getOperations({ options }),
               StoreActions.getWallets()
             ]
           }),
@@ -73,11 +84,12 @@ export class Effects {
       ofType(StoreActions.updateOperation),
       switchMap(({ operation }) =>
         this.httpService.updateOperation(operation).pipe(
-          mergeMap(res => {
+          combineLatestWith(this.store.select(operationsOptionsSelector)),
+          take(1),
+          mergeMap(([res, options]) => {
             this.snackBarService.printInfoSnackBar('success', res.message)
-            void this.router.navigate([`operations/${res.data.type}`])
             return [
-              StoreActions.updateOperationSuccess(),
+              StoreActions.getOperations({ options }),
               StoreActions.getWallets()
             ]
           }),
@@ -95,11 +107,12 @@ export class Effects {
       ofType(StoreActions.deleteOperation),
       switchMap(({ id }) =>
         this.httpService.deleteOperation(id).pipe(
-          mergeMap(res => {
+          combineLatestWith(this.store.select(operationsOptionsSelector)),
+          take(1),
+          mergeMap(([res, options]) => {
             this.snackBarService.printInfoSnackBar('success', res.message)
-            void this.router.navigate([`operations/${res.data.type}`])
             return [
-              StoreActions.deleteOperationSuccess(),
+              StoreActions.getOperations({ options }),
               StoreActions.getWallets()
             ]
           }),

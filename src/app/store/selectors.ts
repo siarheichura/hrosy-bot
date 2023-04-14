@@ -11,6 +11,10 @@ export const operationSelector = createSelector(
   selectFeature,
   state => state.operation
 )
+export const operationsOptionsSelector = createSelector(
+  selectFeature,
+  state => state.options
+)
 
 export const categoriesSelector = createSelector(
   selectFeature,
@@ -35,4 +39,9 @@ export const statisticsSelector = createSelector(
 export const currenciesSelector = createSelector(
   selectFeature,
   state => state.currencies
+)
+
+export const loadingSelector = createSelector(
+  selectFeature,
+  state => state.loading
 )
