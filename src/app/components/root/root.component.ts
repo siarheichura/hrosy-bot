@@ -31,15 +31,15 @@ export const tg = Telegram.WebApp
     HeaderComponent,
     RouterOutlet,
     MatProgressSpinnerModule
-  ],
-  animations: [
-    trigger('moveFromRight', [
-      transition(`index => *`, useAnimation(moveFromRight))
-    ]),
-    trigger('moveFromLeft', [
-      transition(`* => index`, useAnimation(moveFromLeft))
-    ])
   ]
+  // animations: [
+  //   trigger('moveFromRight', [
+  //     transition(`index => *`, useAnimation(moveFromRight))
+  //   ]),
+  //   trigger('moveFromLeft', [
+  //     transition(`* => index`, useAnimation(moveFromLeft))
+  //   ])
+  // ]
 })
 export class RootComponent implements OnInit {
   httpService = inject(HttpService)
