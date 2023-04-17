@@ -12,7 +12,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
 import { transfersSelector, walletsSelector } from '@store/selectors'
-import { combineLatestWith, map, skip } from 'rxjs'
+import { combineLatestWith, map } from 'rxjs'
 import { CardComponent } from '@components/card/card.component'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { AddEditTransferComponent } from '@pages/transfers/add-edit-transfer/add-edit-transfer.component'
@@ -65,7 +65,6 @@ export class TransfersComponent implements OnInit {
   getTransfers() {
     return this.store.select(walletsSelector).pipe(
       untilDestroyed(this),
-      skip(1),
       combineLatestWith(this.store.select(transfersSelector)),
       map(([wallets, transfers]) => {
         return transfers?.map(transfer => {
