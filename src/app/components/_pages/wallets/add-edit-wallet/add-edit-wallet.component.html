@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>{{ dialogData.title }}</h1>
+
+<div mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="fill">
+    <mat-label>name</mat-label>
+    <input matInput formControlName="name" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>currency</mat-label>
+    <mat-select formControlName="currency">
+      <mat-option
+        *ngFor="let currency of currencies$ | async"
+        [value]="currency">
+        {{ currency }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-slide-toggle formControlName="isMain"> Set as Main </mat-slide-toggle>
+</div>
+
+<div mat-dialog-actions class="actions">
+  <button mat-button mat-dialog-close>❌</button>
+  <button mat-button (click)="submitHandler()">👌</button>
+</div>

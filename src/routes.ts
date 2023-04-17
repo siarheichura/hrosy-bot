@@ -16,20 +16,6 @@ export const routes: Routes = [
       )
   },
   {
-    path: `${ROUTES_ENUM.OPERATIONS}/:type/edit/:id`,
-    loadComponent: () =>
-      import('@pages/add-edit-operation/add-edit-operation.component').then(
-        m => m.AddEditOperationComponent
-      )
-  },
-  {
-    path: `${ROUTES_ENUM.OPERATIONS}/:type/add`,
-    loadComponent: () =>
-      import('@pages/add-edit-operation/add-edit-operation.component').then(
-        m => m.AddEditOperationComponent
-      )
-  },
-  {
     path: ROUTES_ENUM.CATEGORIES,
     loadComponent: () =>
       import('@pages/categories/categories.component').then(
@@ -40,20 +26,6 @@ export const routes: Routes = [
     path: ROUTES_ENUM.WALLETS,
     loadComponent: () =>
       import('@pages/wallets/wallets.component').then(m => m.WalletsComponent)
-  },
-  {
-    path: `${ROUTES_ENUM.WALLETS}/edit/:id`,
-    loadComponent: () =>
-      import('@pages/add-edit-wallet/add-edit-wallet.component').then(
-        m => m.AddEditWalletComponent
-      )
-  },
-  {
-    path: `${ROUTES_ENUM.WALLETS}/add`,
-    loadComponent: () =>
-      import('@pages/add-edit-wallet/add-edit-wallet.component').then(
-        m => m.AddEditWalletComponent
-      )
   },
   {
     path: ROUTES_ENUM.TRANSFER,

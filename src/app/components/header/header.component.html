@@ -5,10 +5,10 @@
   aria-hidden="false"
   fontIcon="arrow_back_ios"></mat-icon>
 
-<ng-container *ngIf="walletsVisible$ | async">
-  <div
-    *ngFor="let wallet of wallets$ | async"
-    [ngClass]="{ 'header_main-wallet': wallet.isMain }">
-    {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}
-  </div>
-</ng-container>
+<!--<ng-container *ngIf="walletsVisible$ | async">-->
+<div
+  *ngFor="let wallet of wallets$ | async"
+  [ngClass]="{ 'header_main-wallet': wallet.isMain }">
+  {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}
+</div>
+<!--</ng-container>-->
