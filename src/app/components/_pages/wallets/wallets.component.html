@@ -4,12 +4,13 @@
   </button>
 </div>
 
-<mat-card
-  class="card"
+<app-card
   *ngFor="let wallet of wallets$ | async"
-  (click)="editWalletHandler(wallet.id)">
-  <mat-card-content class="card_content">
+  [id]="wallet.id"
+  (edit)="editWalletHandler(wallet.id)"
+  (delete)="deleteWalletHandler(wallet.id)">
+  <div class="card_content">
     <p>{{ wallet.name }}</p>
     <p>{{ wallet.balance }}{{ wallet.currency }}</p>
-  </mat-card-content>
-</mat-card>
+  </div>
+</app-card>

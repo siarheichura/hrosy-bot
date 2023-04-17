@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnDestroy,
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
@@ -13,7 +12,7 @@ import {
   FormGroup,
   FormControl
 } from '@angular/forms'
-import { debounceTime, map, of, take } from 'rxjs'
+import { debounceTime, map, take } from 'rxjs'
 import { Store } from '@ngrx/store'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { MatFormFieldModule } from '@angular/material/form-field'
@@ -31,7 +30,6 @@ import {
   getCategories,
   getOperation,
   getOperations,
-  resetStore,
   updateOperation
 } from '@store/actions'
 import {
@@ -45,7 +43,7 @@ import { DateRangePickerComponent } from '@components/date-range-picker/date-ran
 import { CardComponent } from '@components/card/card.component'
 import { INITIAL_MONTH_PERIOD } from '@constants/constants'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
-import { AddEditOperationComponent } from '@pages/add-edit-operation/add-edit-operation.component'
+import { AddEditOperationComponent } from '@pages/operations/add-edit-operation/add-edit-operation.component'
 
 interface IFiltersForm {
   wallets: FormControl<string[]>
@@ -78,7 +76,7 @@ interface IFiltersForm {
     MatDialogModule
   ]
 })
-export class OperationsComponent implements OnInit, OnDestroy {
+export class OperationsComponent implements OnInit {
   store: Store<IState> = inject(Store)
   fb = inject(FormBuilder)
   route = inject(ActivatedRoute)
@@ -174,9 +172,5 @@ export class OperationsComponent implements OnInit, OnDestroy {
 
   deleteOperationHandler(id: string) {
     this.store.dispatch(deleteOperation({ id }))
-  }
-
-  ngOnDestroy() {
-    this.store.dispatch(resetStore())
   }
 }

@@ -33,12 +33,9 @@
 
   .day-card {
     padding: 5px 10px;
-    margin-bottom: 5px;
     display: flex;
     flex-direction: column;
     gap: 5px;
-    background-color: $bg-color;
-    color: $text-color;
 
     &_date {
       font-weight: 600;

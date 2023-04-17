@@ -1,11 +1,6 @@
 @import "src/variables";
 
 :host {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
   .menu {
     display: flex;
     justify-content: flex-end;
@@ -15,14 +10,10 @@
     }
   }
 
-  .card {
-    background-color: $bg-color;
-
-    &_content {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      font-size: 1.3rem;
-    }
+  .card_content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3rem;
   }
 }
