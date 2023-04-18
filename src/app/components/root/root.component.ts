@@ -6,8 +6,6 @@ import {
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { RouterOutlet } from '@angular/router'
-import { transition, trigger, useAnimation } from '@angular/animations'
-import { moveFromLeft, moveFromRight } from 'ngx-router-animations'
 import { HeaderComponent } from '@components/header/header.component'
 import { HttpService } from '@services/http.service'
 import { Store } from '@ngrx/store'
@@ -32,14 +30,6 @@ export const tg = Telegram.WebApp
     RouterOutlet,
     MatProgressSpinnerModule
   ]
-  // animations: [
-  //   trigger('moveFromRight', [
-  //     transition(`index => *`, useAnimation(moveFromRight))
-  //   ]),
-  //   trigger('moveFromLeft', [
-  //     transition(`* => index`, useAnimation(moveFromLeft))
-  //   ])
-  // ]
 })
 export class RootComponent implements OnInit {
   httpService = inject(HttpService)
@@ -50,10 +40,6 @@ export class RootComponent implements OnInit {
   ngOnInit(): void {
     this.initTelegram()
     this.store.dispatch(getWallets())
-  }
-
-  getStateForAnimation(outlet: any) {
-    return outlet.activatedRouteData.state
   }
 
   initTelegram() {
@@ -70,6 +56,4 @@ export class RootComponent implements OnInit {
       this.httpService.setUserToLocalStorage('dev_hash', 5958132991)
     }
   }
-
-  protected readonly transition = transition
 }

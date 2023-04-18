@@ -33,35 +33,39 @@ export const reducers = createReducer(
   on(Actions.addOperation, state => ({ ...state, loading: true })),
   on(Actions.addOperationFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
   on(Actions.updateOperation, state => ({ ...state, loading: true })),
-  on(Actions.updateOperationSuccess, state => ({ ...state })),
   on(Actions.updateOperationFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
   on(Actions.deleteOperation, state => ({ ...state, loading: true })),
-  on(Actions.deleteOperationSuccess, state => ({ ...state })),
   on(Actions.deleteOperationFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
 
   // categories
-  on(Actions.getCategories, state => ({ ...state })),
+  on(Actions.getCategories, state => ({ ...state, loading: true })),
   on(Actions.getCategoriesSuccess, (state, action) => ({
     ...state,
-    categories: action.categories
+    categories: action.categories,
+    loading: false
   })),
   on(Actions.getCategoriesFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
-  on(Actions.updateCategories, state => ({ ...state })),
+  on(Actions.updateCategories, state => ({ ...state, loading: true })),
   on(Actions.updateCategoriesSuccess, (state, action) => ({
     ...state,
-    categories: action.categories
+    categories: action.categories,
+    loading: false
   })),
 
   // wallets
@@ -76,67 +80,78 @@ export const reducers = createReducer(
     error: action.error,
     loading: false
   })),
-  on(Actions.addWallet, state => ({ ...state })),
+  on(Actions.addWallet, state => ({ ...state, loading: true })),
   on(Actions.addWalletFailure, (state, action) => ({
     ...state,
     error: action.error
   })),
-  on(Actions.updateWallet, state => ({ ...state })),
+  on(Actions.updateWallet, state => ({ ...state, loading: true })),
   on(Actions.updateWalletFailure, (state, action) => ({
     ...state,
     error: action.error
   })),
-  on(Actions.deleteWallet, state => ({ ...state })),
+  on(Actions.deleteWallet, state => ({ ...state, loading: true })),
+  on(Actions.deleteWalletFailure, state => ({ ...state, loading: false })),
 
   // transfers
-  on(Actions.getTransfers, state => ({ ...state })),
+  on(Actions.getTransfers, state => ({ ...state, loading: true })),
   on(Actions.getTransfersSuccess, (state, action) => ({
     ...state,
-    transfers: action.transfers
+    transfers: action.transfers,
+    loading: false
   })),
   on(Actions.getTransfersFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
-  on(Actions.addTransfer, state => ({ ...state })),
+  on(Actions.addTransfer, state => ({ ...state, loading: true })),
   on(Actions.addTransferSuccess, (state, action) => ({
     ...state,
-    transfers: [...state.transfers, action.transfer]
+    transfers: [...state.transfers, action.transfer],
+    loading: false
   })),
   on(Actions.addTransferFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
-  on(Actions.updateTransfer, state => ({ ...state })),
+  on(Actions.updateTransfer, state => ({ ...state, loading: true })),
   on(Actions.updateTransferSuccess, (state, action) => ({
     ...state,
     transfers: state.transfers.map(t =>
       t.id === action.transfer.id ? action.transfer : t
-    )
+    ),
+    loading: false
   })),
   on(Actions.updateTransferFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
-  on(Actions.deleteTransfer, state => ({ ...state })),
+  on(Actions.deleteTransfer, state => ({ ...state, loading: true })),
   on(Actions.deleteTransferSuccess, (state, action) => ({
     ...state,
-    transfers: state.transfers.filter(t => t.id !== action.transfer.id)
+    transfers: state.transfers.filter(t => t.id !== action.transfer.id),
+    loading: false
   })),
   on(Actions.deleteTransferFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
 
   // statistics
-  on(Actions.getStatistics, state => ({ ...state })),
+  on(Actions.getStatistics, state => ({ ...state, loading: true })),
   on(Actions.getStatisticsSuccess, (state, action) => ({
     ...state,
-    statistics: action.statistics
+    statistics: action.statistics,
+    loading: false
   })),
   on(Actions.getStatisticsFailure, (state, action) => ({
     ...state,
-    error: action.error
+    error: action.error,
+    loading: false
   })),
 
   // currencies
@@ -150,22 +165,27 @@ export const reducers = createReducer(
     error: action.error
   })),
 
-  // loading
-  on(Actions.toggleLoading, (state, action) => ({
+  // page title
+  on(Actions.setPageTitle, (state, action) => ({
     ...state,
-    loading: action.loading
+    pageTitle: action.title
   })),
 
   // reset store
   on(Actions.resetStore, state => ({
     ...state,
     operations: [],
-    currencies: [],
+    operation: null,
+    options: null,
     categories: {
       expense: [],
       income: []
     },
-    options: null,
+    currencies: [],
+    statistics: null,
+    transfers: null,
+    pageTitle: null,
+    loading: false,
     error: null
   }))
 )

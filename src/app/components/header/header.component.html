@@ -1,14 +1,22 @@
-<mat-icon
-  class="header_back-btn"
-  *ngIf="backButtonVisible$ | async"
-  (click)="backHandler()"
-  aria-hidden="false"
-  fontIcon="arrow_back_ios"></mat-icon>
-
-<!--<ng-container *ngIf="walletsVisible$ | async">-->
-<div
-  *ngFor="let wallet of wallets$ | async"
-  [ngClass]="{ 'header_main-wallet': wallet.isMain }">
-  {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}
+<div>
+  <button
+    mat-icon-button
+    *ngIf="backButtonVisible$ | async"
+    (click)="backHandler()">
+    <mat-icon>keyboard_backspace</mat-icon>
+  </button>
 </div>
-<!--</ng-container>-->
+
+<div>
+  {{ title$ | async }}
+</div>
+
+<button mat-icon-button [matMenuTriggerFor]="menu">
+  <mat-icon>balance</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu">
+  <div disabled mat-menu-item *ngFor="let wallet of wallets$ | async">
+    {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}
+  </div>
+</mat-menu>

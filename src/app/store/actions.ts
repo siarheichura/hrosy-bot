@@ -38,10 +38,6 @@ export const getOperationFailure = createAction(
 )
 export const addOperation = createAction(
   '[OPERATIONS] add operation',
-  props<{ operation: Partial<IOperation> }>()
-)
-export const addOperationSuccess = createAction(
-  '[OPERATIONS] add operation success',
   props<{ operation: IOperation }>()
 )
 export const addOperationFailure = createAction(
@@ -52,10 +48,6 @@ export const updateOperation = createAction(
   '[OPERATIONS] update operation',
   props<{ operation: IOperation }>()
 )
-export const updateOperationSuccess = createAction(
-  '[OPERATIONS] update operation success'
-  // props<{ operations: IDayOperations[] }>()
-)
 export const updateOperationFailure = createAction(
   '[OPERATIONS] update operation failure',
   props<{ error: string }>()
@@ -63,10 +55,6 @@ export const updateOperationFailure = createAction(
 export const deleteOperation = createAction(
   '[OPERATIONS] delete operation',
   props<{ id: string }>()
-)
-export const deleteOperationSuccess = createAction(
-  '[OPERATIONS] delete operation success'
-  // props<{ operation: IOperation }>()
 )
 export const deleteOperationFailure = createAction(
   '[OPERATIONS] delete operation failure',
@@ -108,7 +96,7 @@ export const getWalletsFailure = createAction(
 )
 export const addWallet = createAction(
   '[WALLETS] add wallet',
-  props<{ data: Partial<IWallet> }>()
+  props<{ wallet: IWallet }>()
 )
 export const addWalletFailure = createAction(
   '[WALLETS] add wallet failure',
@@ -116,7 +104,7 @@ export const addWalletFailure = createAction(
 )
 export const updateWallet = createAction(
   '[WALLETS] update wallet',
-  props<{ data: Partial<IWallet> }>()
+  props<{ wallet: IWallet }>()
 )
 export const updateWalletFailure = createAction(
   '[WALLETS] update wallet failure',
@@ -125,10 +113,6 @@ export const updateWalletFailure = createAction(
 export const deleteWallet = createAction(
   '[WALLETS] delete wallet',
   props<{ id: string }>()
-)
-export const deleteWalletSuccess = createAction(
-  '[WALLETS] delete wallet success',
-  props<{ message: string }>()
 )
 export const deleteWalletFailure = createAction(
   '[WALLETS] delete wallet failure',
@@ -150,7 +134,7 @@ export const getTransfersFailure = createAction(
 )
 export const addTransfer = createAction(
   '[TRANSFERS] add transfer',
-  props<{ transfer: Partial<ITransfer> }>()
+  props<{ transfer: ITransfer }>()
 )
 export const addTransferSuccess = createAction(
   '[TRANSFERS] add transfer success',
@@ -212,9 +196,10 @@ export const getAllCurrenciesFailure = createAction(
   props<{ error: string }>()
 )
 
-export const toggleLoading = createAction(
-  '[LOADING] toggle loading',
-  props<{ loading: boolean }>()
+// page title
+export const setPageTitle = createAction(
+  '[PAGE TITLE] set page title',
+  props<{ title: string }>()
 )
 
 // reset store

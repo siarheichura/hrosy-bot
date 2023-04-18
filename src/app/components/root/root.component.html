@@ -1,9 +1,7 @@
 <app-header></app-header>
 
-<!--[@moveFromLeft]="getStateForAnimation(o)"-->
-<!--[@moveFromRight]="getStateForAnimation(o)"-->
 <div class="router-wrapper">
-  <router-outlet #o="outlet"></router-outlet>
+  <router-outlet></router-outlet>
 </div>
 
 <div class="spinner" *ngIf="loading$ | async">

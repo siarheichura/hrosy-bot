@@ -13,7 +13,12 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips'
 import { MatIconModule } from '@angular/material/icon'
 import { ReactiveFormsModule } from '@angular/forms'
 import { IState } from '@store/store'
-import { getCategories, resetStore, updateCategories } from '@store/actions'
+import {
+  getCategories,
+  resetStore,
+  setPageTitle,
+  updateCategories
+} from '@store/actions'
 import { categoriesSelector } from '@store/selectors'
 import { ButtonComponent } from '@components/button/button.component'
 import { ICategories } from '@app/interfaces'
@@ -40,6 +45,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   constructor(private store: Store<IState>) {}
 
   ngOnInit(): void {
+    this.store.dispatch(setPageTitle({ title: 'CATEGORIES' }))
     this.store.dispatch(getCategories())
   }
 
