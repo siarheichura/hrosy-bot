@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  OnDestroy,
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
@@ -20,6 +21,8 @@ import {
   addTransfer,
   deleteTransfer,
   getTransfers,
+  resetStore,
+  setPageTitle,
   updateTransfer
 } from '@store/actions'
 import { DateRangePickerComponent } from '@components/date-range-picker/date-range-picker.component'
@@ -50,7 +53,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker'
     ReactiveFormsModule
   ]
 })
-export class TransfersComponent implements OnInit {
+export class TransfersComponent implements OnInit, OnDestroy {
   store = inject(Store<IState>)
   dialog = inject(MatDialog)
 
@@ -59,6 +62,7 @@ export class TransfersComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.store.dispatch(setPageTitle({ title: 'TRANSFERS' }))
     this.store.dispatch(getTransfers({ period: INITIAL_MONTH_PERIOD }))
   }
 
@@ -116,5 +120,9 @@ export class TransfersComponent implements OnInit {
           }
         }
       })
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(resetStore())
   }
 }

@@ -30,13 +30,15 @@ export class Effects {
     this.actions$.pipe(
       ofType(StoreActions.getOperations),
       switchMap(({ options }) =>
-        this.httpService
-          .getOperations(options)
-          .pipe(
-            map(res =>
-              StoreActions.getOperationsSuccess({ operations: res.data })
-            )
-          )
+        this.httpService.getOperations(options).pipe(
+          map(res =>
+            StoreActions.getOperationsSuccess({ operations: res.data })
+          ),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.getOperationsFailure({ error: err.error }))
+          })
+        )
       )
     )
   )
@@ -64,7 +66,6 @@ export class Effects {
           combineLatestWith(this.store.select(operationsOptionsSelector)),
           take(1),
           mergeMap(([res, options]) => {
-            this.snackBarService.printInfoSnackBar('success', res.message)
             return [
               StoreActions.getOperations({ options }),
               StoreActions.getWallets()
@@ -87,7 +88,6 @@ export class Effects {
           combineLatestWith(this.store.select(operationsOptionsSelector)),
           take(1),
           mergeMap(([res, options]) => {
-            this.snackBarService.printInfoSnackBar('success', res.message)
             return [
               StoreActions.getOperations({ options }),
               StoreActions.getWallets()
@@ -110,7 +110,6 @@ export class Effects {
           combineLatestWith(this.store.select(operationsOptionsSelector)),
           take(1),
           mergeMap(([res, options]) => {
-            this.snackBarService.printInfoSnackBar('success', res.message)
             return [
               StoreActions.getOperations({ options }),
               StoreActions.getWallets()
@@ -175,24 +174,14 @@ export class Effects {
   readonly addWallet$ = createEffect(() =>
     this.actions$.pipe(
       ofType(StoreActions.addWallet),
-      switchMap(({ data }) =>
-        this.httpService
-          .addWallet({
-            name: data.name,
-            currency: data.currency,
-            isMain: data.isMain
+      switchMap(({ wallet }) =>
+        this.httpService.addWallet(wallet).pipe(
+          map(() => StoreActions.getWallets()),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.addWalletFailure({ error: err.message }))
           })
-          .pipe(
-            map(res => {
-              this.snackBarService.printInfoSnackBar('success', res.message)
-              void this.router.navigate(['wallets'])
-              return StoreActions.getWallets()
-            }),
-            catchError(err => {
-              this.snackBarService.printInfoSnackBar('error', err.error)
-              return of(StoreActions.addWalletFailure({ error: err.message }))
-            })
-          )
+        )
       )
     )
   )
@@ -200,25 +189,14 @@ export class Effects {
   readonly updateWallet$ = createEffect(() =>
     this.actions$.pipe(
       ofType(StoreActions.updateWallet),
-      switchMap(({ data }) =>
-        this.httpService
-          .updateWallet({
-            id: data.id,
-            name: data.name,
-            currency: data.currency,
-            isMain: data.isMain
+      switchMap(({ wallet }) =>
+        this.httpService.updateWallet(wallet).pipe(
+          map(() => StoreActions.getWallets()),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.updateWalletFailure({ error: err.error }))
           })
-          .pipe(
-            map(res => {
-              this.snackBarService.printInfoSnackBar('success', res.message)
-              void this.router.navigate(['wallets'])
-              return StoreActions.getWallets()
-            }),
-            catchError(err => {
-              this.snackBarService.printInfoSnackBar('error', err.error)
-              return of(StoreActions.updateWalletFailure({ error: err.error }))
-            })
-          )
+        )
       )
     )
   )
@@ -228,11 +206,7 @@ export class Effects {
       ofType(StoreActions.deleteWallet),
       switchMap(({ id }) =>
         this.httpService.deleteWallet(id).pipe(
-          map(res => {
-            this.snackBarService.printInfoSnackBar('success', res.message)
-            void this.router.navigate(['wallets'])
-            return StoreActions.getWallets()
-          }),
+          map(() => StoreActions.getWallets()),
           catchError(err => {
             this.snackBarService.printInfoSnackBar('error', err.error)
             return of(StoreActions.deleteWalletFailure({ error: err.error }))
@@ -263,9 +237,12 @@ export class Effects {
       ofType(StoreActions.addTransfer),
       switchMap(({ transfer }) =>
         this.httpService.addTransfer(transfer).pipe(
-          map(res => {
+          mergeMap(res => {
             this.snackBarService.printInfoSnackBar('success', res.message)
-            return StoreActions.addTransferSuccess({ transfer: res.data })
+            return [
+              StoreActions.addTransferSuccess({ transfer: res.data }),
+              StoreActions.getWallets()
+            ]
           }),
           catchError(err => {
             this.snackBarService.printInfoSnackBar('error', err.error)
@@ -281,9 +258,12 @@ export class Effects {
       ofType(StoreActions.updateTransfer),
       switchMap(({ transfer }) =>
         this.httpService.updateTransfer(transfer).pipe(
-          map(res => {
+          mergeMap(res => {
             this.snackBarService.printInfoSnackBar('success', res.message)
-            return StoreActions.updateTransferSuccess({ transfer: res.data })
+            return [
+              StoreActions.updateTransferSuccess({ transfer: res.data }),
+              StoreActions.getWallets()
+            ]
           }),
           catchError(err => {
             this.snackBarService.printInfoSnackBar('error', err.error)
@@ -299,9 +279,12 @@ export class Effects {
       ofType(StoreActions.deleteTransfer),
       switchMap(({ id }) =>
         this.httpService.deleteTransfer(id).pipe(
-          map(res => {
+          mergeMap(res => {
             this.snackBarService.printInfoSnackBar('success', res.message)
-            return StoreActions.deleteTransferSuccess({ transfer: res.data })
+            return [
+              StoreActions.deleteTransferSuccess({ transfer: res.data }),
+              StoreActions.getWallets()
+            ]
           }),
           catchError(err => {
             this.snackBarService.printInfoSnackBar('error', err.error)

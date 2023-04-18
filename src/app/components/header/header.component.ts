@@ -1,17 +1,19 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  inject,
   OnDestroy,
   OnInit
 } from '@angular/core'
-import { CommonModule, Location } from '@angular/common'
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router'
+import { CommonModule } from '@angular/common'
+import { NavigationStart, Router } from '@angular/router'
 import { MatIconModule } from '@angular/material/icon'
 import { Subject, Subscription } from 'rxjs'
-import { walletsSelector } from '@store/selectors'
+import { pageTitleSelector, walletsSelector } from '@store/selectors'
 import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
+import { MatMenuModule } from '@angular/material/menu'
+import { MatButtonModule } from '@angular/material/button'
 
 @Component({
   selector: 'app-header',
@@ -19,35 +21,28 @@ import { IState } from '@store/store'
   styleUrls: ['./header.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, MatIconModule]
+  imports: [CommonModule, MatIconModule, MatMenuModule, MatButtonModule]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  store: Store<IState> = inject(Store)
+  router = inject(Router)
+
   wallets$ = this.store.select(walletsSelector)
+  title$ = this.store.select(pageTitleSelector)
 
   routeSubscription: Subscription
   backButtonVisible$: Subject<boolean> = new Subject()
-  walletsVisible$: Subject<boolean> = new Subject()
-
-  constructor(
-    private store: Store<IState>,
-    private location: Location,
-    private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
 
   ngOnInit(): void {
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        this.backButtonVisible$.next(event.url !== '/' && event.url[1] !== '#')
-        this.walletsVisible$.next(!event.url.includes('wallets'))
+        this.backButtonVisible$.next(event.url !== '/')
       }
     })
   }
 
   backHandler() {
     void this.router.navigate([''])
-    // this.location.back()
   }
 
   ngOnDestroy() {

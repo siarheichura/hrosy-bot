@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import {
   FormBuilder,
@@ -17,7 +22,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
-import { getStatistics } from '@store/actions'
+import { getStatistics, resetStore, setPageTitle } from '@store/actions'
 import { statisticsSelector, walletsSelector } from '@store/selectors'
 import { OPERATION_TYPES } from '@constants/enums'
 import { OperationType } from '@app/interfaces'
@@ -46,7 +51,7 @@ interface IPeriodForm {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit, OnDestroy {
   types = OPERATION_TYPES
   periodForm: FormGroup<IPeriodForm>
   typeControl: FormControl<string> = new FormControl(this.types.EXPENSE)
@@ -64,6 +69,8 @@ export class StatisticsComponent implements OnInit {
   constructor(private store: Store<IState>, private fb: FormBuilder) {}
 
   ngOnInit() {
+    this.store.dispatch(setPageTitle({ title: 'STATISTICS' }))
+
     this.periodForm = this.fb.group({
       start: [dayjs().utc().startOf('month').toDate()],
       end: [dayjs().utc().endOf('month').toDate()]
@@ -107,5 +114,9 @@ export class StatisticsComponent implements OnInit {
         })
       )
     }
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(resetStore())
   }
 }

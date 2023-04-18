@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  OnDestroy,
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
@@ -14,7 +15,13 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
 import { walletsSelector } from '@store/selectors'
-import { addWallet, deleteWallet, updateWallet } from '@store/actions'
+import {
+  addWallet,
+  deleteWallet,
+  resetStore,
+  setPageTitle,
+  updateWallet
+} from '@store/actions'
 import { AddEditWalletComponent } from '@pages/wallets/add-edit-wallet/add-edit-wallet.component'
 import { CardComponent } from '@components/card/card.component'
 import { SnackBarService } from '@services/snack-bar.service'
@@ -34,7 +41,7 @@ import { SnackBarService } from '@services/snack-bar.service'
     CardComponent
   ]
 })
-export class WalletsComponent implements OnInit {
+export class WalletsComponent implements OnInit, OnDestroy {
   store: Store<IState> = inject(Store)
   router = inject(Router)
   dialog = inject(MatDialog)
@@ -42,7 +49,9 @@ export class WalletsComponent implements OnInit {
 
   wallets$ = this.store.select(walletsSelector)
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.dispatch(setPageTitle({ title: 'WALLETS' }))
+  }
 
   openAddEditDialog(title: string, id?: string) {
     const data = { title, id }
@@ -54,7 +63,9 @@ export class WalletsComponent implements OnInit {
       .subscribe(data => {
         if (data) {
           this.store.dispatch(
-            data.id ? updateWallet({ data }) : addWallet({ data })
+            data.id
+              ? updateWallet({ wallet: data })
+              : addWallet({ wallet: data })
           )
         }
       })
@@ -73,5 +84,9 @@ export class WalletsComponent implements OnInit {
       'Are you sure? All operations will be deleted!',
       () => this.store.dispatch(deleteWallet({ id }))
     )
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(resetStore())
   }
 }

@@ -2,9 +2,10 @@
   position: relative;
   min-height: 50px;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
   align-items: center;
+  justify-items: center;
 
   .header_main-wallet {
     font-size: 1.4rem;

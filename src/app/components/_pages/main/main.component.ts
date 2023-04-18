@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { MENU_BUTTONS } from '@constants/constants'
@@ -12,9 +12,10 @@ import { MENU_BUTTONS } from '@constants/constants'
   imports: [CommonModule]
 })
 export class MainComponent {
-  navButtons = MENU_BUTTONS
+  router = inject(Router)
+  route = inject(ActivatedRoute)
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  navButtons = MENU_BUTTONS
 
   onClick(route: string): void {
     void this.router.navigate([route], { relativeTo: this.route })

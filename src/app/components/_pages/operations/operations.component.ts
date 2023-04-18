@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  OnDestroy,
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
@@ -30,6 +31,8 @@ import {
   getCategories,
   getOperation,
   getOperations,
+  resetStore,
+  setPageTitle,
   updateOperation
 } from '@store/actions'
 import {
@@ -76,7 +79,7 @@ interface IFiltersForm {
     MatDialogModule
   ]
 })
-export class OperationsComponent implements OnInit {
+export class OperationsComponent implements OnInit, OnDestroy {
   store: Store<IState> = inject(Store)
   fb = inject(FormBuilder)
   route = inject(ActivatedRoute)
@@ -95,6 +98,7 @@ export class OperationsComponent implements OnInit {
     .pipe(map(categories => categories[this.type]))
 
   ngOnInit() {
+    this.store.dispatch(setPageTitle({ title: this.type.toUpperCase() }))
     this.initFiltersForm()
     this.dispatchGetOperations()
   }
@@ -112,11 +116,11 @@ export class OperationsComponent implements OnInit {
       .pipe(take(1))
       .subscribe(data => {
         if (data) {
-          if (data.id) {
-            this.store.dispatch(updateOperation({ operation: data }))
-          } else {
-            this.store.dispatch(addOperation({ operation: data }))
-          }
+          this.store.dispatch(
+            data.id
+              ? updateOperation({ operation: data })
+              : addOperation({ operation: data })
+          )
         }
       })
   }
@@ -172,5 +176,9 @@ export class OperationsComponent implements OnInit {
 
   deleteOperationHandler(id: string) {
     this.store.dispatch(deleteOperation({ id }))
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(resetStore())
   }
 }
