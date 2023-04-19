@@ -58,8 +58,9 @@
     (edit)="editOperationHandler($event)"
     (delete)="deleteOperationHandler($event)">
     <div class="day-card_operation-title">
-      <p>{{ operation.category }}</p>
-      <p>💰 {{ operation.sum }}{{ operation.currency }}</p>
+      <p>{{ operation.category.name }}</p>
+      <p>💰 {{ operation.sum }}{{ operation.wallet.currency }}</p>
+      <p>{{ operation.wallet.name }}</p>
     </div>
     <mat-hint *ngIf="operation.comment"> 💬 {{ operation.comment }} </mat-hint>
   </app-card>

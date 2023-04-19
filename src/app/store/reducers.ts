@@ -61,12 +61,48 @@ export const reducers = createReducer(
     error: action.error,
     loading: false
   })),
-  on(Actions.updateCategories, state => ({ ...state, loading: true })),
-  on(Actions.updateCategoriesSuccess, (state, action) => ({
+  on(Actions.addCategory, state => ({ ...state, loading: true })),
+  on(Actions.addCategorySuccess, (state, action) => ({
     ...state,
-    categories: action.categories,
+    categories: [...state.categories, action.category],
     loading: false
   })),
+  on(Actions.addCategoryFailure, (state, action) => ({
+    ...state,
+    error: action.error,
+    loading: false
+  })),
+  on(Actions.updateCategory, state => ({ ...state, loading: true })),
+  on(Actions.updateCategorySuccess, (state, action) => ({
+    ...state,
+    categories: state.categories.map(c =>
+      c.id === action.category.id ? action.category : c
+    ),
+    loading: false
+  })),
+  on(Actions.updateCategoryFailure, (state, action) => ({
+    ...state,
+    error: action.error,
+    loading: false
+  })),
+  on(Actions.updateCategory, state => ({ ...state, loading: true })),
+  on(Actions.deleteCategorySuccess, (state, action) => ({
+    ...state,
+    categories: state.categories.filter(c => c.id !== action.category.id),
+    loading: false
+  })),
+  on(Actions.deleteCategoryFailure, (state, action) => ({
+    ...state,
+    error: action.error,
+    loading: false
+  })),
+
+  // on(Actions.updateCategories, state => ({ ...state, loading: true })),
+  // on(Actions.updateCategoriesSuccess, (state, action) => ({
+  //   ...state,
+  //   categories: action.categories,
+  //   loading: false
+  // })),
 
   // wallets
   on(Actions.getWallets, state => ({ ...state, loading: true })),
@@ -177,10 +213,7 @@ export const reducers = createReducer(
     operations: [],
     operation: null,
     options: null,
-    categories: {
-      expense: [],
-      income: []
-    },
+    categories: [],
     currencies: [],
     statistics: null,
     transfers: null,

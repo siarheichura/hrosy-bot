@@ -13,7 +13,8 @@ import {
   IStatistics,
   OperationType,
   IPeriod,
-  ITransfer
+  ITransfer,
+  ICategory
 } from '@app/interfaces'
 
 @Injectable({
@@ -92,8 +93,30 @@ export class HttpService {
   }
 
   // categories
-  getCategories(): Observable<IHttpResponse<ICategories>> {
-    return this.http.get<IHttpResponse<ICategories>>(`${this.apiUrl}categories`)
+  getCategories(): Observable<IHttpResponse<ICategory[]>> {
+    return this.http.get<IHttpResponse<ICategory[]>>(`${this.apiUrl}categories`)
+  }
+
+  addCategory(
+    category: Partial<ICategory>
+  ): Observable<IHttpResponse<ICategory>> {
+    return this.http.post<IHttpResponse<ICategory>>(
+      `${this.apiUrl}categories`,
+      category
+    )
+  }
+
+  updateCategory(category: ICategory): Observable<IHttpResponse<ICategory>> {
+    return this.http.put<IHttpResponse<ICategory>>(
+      `${this.apiUrl}categories/${category.id}`,
+      category
+    )
+  }
+
+  deleteCategory(id: string): Observable<IHttpResponse<ICategory>> {
+    return this.http.delete<IHttpResponse<ICategory>>(
+      `${this.apiUrl}categories/${id}`
+    )
   }
 
   updateCategories(categories: ICategories): Observable<IHttpResponse<null>> {

@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store'
 import {
-  ICategories,
   IOperation,
   IDayOperations,
   IWallet,
@@ -8,7 +7,8 @@ import {
   OperationType,
   IPeriod,
   IStatistics,
-  ITransfer
+  ITransfer,
+  ICategory
 } from '@app//interfaces'
 
 // operations
@@ -65,24 +65,61 @@ export const deleteOperationFailure = createAction(
 export const getCategories = createAction('[CATEGORIES] get categories')
 export const getCategoriesSuccess = createAction(
   '[CATEGORIES] get categories success',
-  props<{ categories: ICategories }>()
+  props<{ categories: ICategory[] }>()
 )
 export const getCategoriesFailure = createAction(
   '[CATEGORIES] get categories failure',
   props<{ error: string }>()
 )
-export const updateCategories = createAction(
-  '[CATEGORIES] update categories',
-  props<{ categories: ICategories }>()
+export const addCategory = createAction(
+  '[CATEGORIES] add category',
+  props<{ category: ICategory }>()
 )
-export const updateCategoriesSuccess = createAction(
-  '[CATEGORIES] update categories',
-  props<{ categories: ICategories }>()
+export const addCategorySuccess = createAction(
+  '[CATEGORIES] add category success',
+  props<{ category: ICategory }>()
 )
-export const updateCategoriesFailure = createAction(
-  '[CATEGORIES] update categories',
+export const addCategoryFailure = createAction(
+  '[CATEGORIES] add category failure',
   props<{ error: string }>()
 )
+export const updateCategory = createAction(
+  '[CATEGORIES] update category',
+  props<{ category: ICategory }>()
+)
+export const updateCategorySuccess = createAction(
+  '[CATEGORIES] update category success',
+  props<{ category: ICategory }>()
+)
+export const updateCategoryFailure = createAction(
+  '[CATEGORIES] update category failure',
+  props<{ error: string }>()
+)
+export const deleteCategory = createAction(
+  '[CATEGORIES] delete category',
+  props<{ id: string }>()
+)
+export const deleteCategorySuccess = createAction(
+  '[CATEGORIES] delete category success',
+  props<{ category: ICategory }>()
+)
+export const deleteCategoryFailure = createAction(
+  '[CATEGORIES] delete category failure',
+  props<{ error: string }>()
+)
+
+// export const updateCategories = createAction(
+//   '[CATEGORIES] update categories',
+//   props<{ categories: ICategories }>()
+// )
+// export const updateCategoriesSuccess = createAction(
+//   '[CATEGORIES] update categories',
+//   props<{ categories: ICategories }>()
+// )
+// export const updateCategoriesFailure = createAction(
+//   '[CATEGORIES] update categories',
+//   props<{ error: string }>()
+// )
 
 // wallets
 export const getWallets = createAction('[WALLETS] get wallets')

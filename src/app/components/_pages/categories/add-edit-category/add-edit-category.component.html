@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>{{ dialogData.title }}</h1>
+
+<div mat-dialog-content [formGroup]="form">
+  <mat-button-toggle-group formControlName="type" aria-label="Font Style">
+    <mat-button-toggle [value]="types.EXPENSE">
+      {{ types.EXPENSE }}
+    </mat-button-toggle>
+    <mat-button-toggle [value]="types.INCOME">
+      {{ types.INCOME }}
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input formControlName="name" matInput />
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions class="actions">
+  <button mat-button mat-dialog-close>❌</button>
+  <button mat-button (click)="submitHandler()">👌</button>
+</div>

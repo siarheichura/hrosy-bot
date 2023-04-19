@@ -1,5 +1,12 @@
+@import "src/variables";
+
 :host {
-  .form-field {
-    width: 100%;
+  .menu {
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      color: $button-bg-color;
+    }
   }
 }

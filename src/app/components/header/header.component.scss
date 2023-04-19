@@ -1,3 +1,5 @@
+@import "src/variables";
+
 :host {
   position: relative;
   min-height: 50px;
@@ -6,6 +8,10 @@
   grid-template-columns: 50px 1fr 50px;
   align-items: center;
   justify-items: center;
+
+  button {
+    color: $button-bg-color;
+  }
 
   .header_main-wallet {
     font-size: 1.4rem;

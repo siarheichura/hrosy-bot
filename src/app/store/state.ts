@@ -4,10 +4,7 @@ export const initState: IAppState = {
   operations: [],
   operation: null,
   options: null,
-  categories: {
-    expense: [],
-    income: []
-  },
+  categories: [],
   wallets: [],
   currencies: [],
   statistics: null,
