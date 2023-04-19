@@ -1,0 +1,8 @@
+.idea
+.vscode
+.env
+node_modules
+dist/
+build/
+_models_old
+_telegram_old

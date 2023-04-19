@@ -33,7 +33,7 @@
       "ES2022",
       "dom"
     ],
-    "strictNullChecks": false,
+    "strictNullChecks": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
