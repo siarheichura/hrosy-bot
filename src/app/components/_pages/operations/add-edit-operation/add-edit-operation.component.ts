@@ -66,26 +66,22 @@ interface IForm {
   ]
 })
 export class AddEditOperationComponent implements OnInit {
-  // injections
   store: Store<IState> = inject(Store)
   fb = inject(FormBuilder)
   dialogRef = inject(MatDialogRef)
   dialogData: { title: string; type: OperationType; id?: string } =
     inject(MAT_DIALOG_DATA)
 
-  // properties
   currency: string
 
-  // forms
   form: FormGroup<IForm> = this.fb.group({
-    wallet: ['', [Validators.required]],
-    category: ['', [Validators.required]],
-    sum: [0, [Validators.required, Validators.min(0.01)]],
-    comment: [''],
-    createdAt: [new Date(), [Validators.required]]
+    wallet: new FormControl(null, [Validators.required]),
+    category: new FormControl(null, [Validators.required]),
+    sum: new FormControl(null, [Validators.required, Validators.min(0.01)]),
+    comment: new FormControl(null),
+    createdAt: new FormControl(new Date(), [Validators.required])
   })
 
-  // streams
   $wallets = this.store.select(walletsSelector).pipe(
     tap(wallets => {
       if (!this.dialogData.id) {
@@ -112,7 +108,9 @@ export class AddEditOperationComponent implements OnInit {
     .subscribe()
   $categories = this.store
     .select(categoriesSelector)
-    .pipe(map(categories => categories[this.dialogData.type]))
+    .pipe(
+      map(categories => categories.filter(c => c.type === this.dialogData.type))
+    )
 
   ngOnInit() {
     this.initWalletChangeHandler()

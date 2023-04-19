@@ -68,11 +68,11 @@ export class AddEditTransferComponent implements OnInit {
   currencyTo: string
 
   form: FormGroup<IForm> = this.fb.group({
-    from: ['', [Validators.required]],
-    to: ['', [Validators.required]],
-    sumFrom: [0, [Validators.required, Validators.min(0.01)]],
-    sumTo: [0, [Validators.required, Validators.min(0.01)]],
-    rate: [0]
+    from: new FormControl(null, [Validators.required]),
+    to: new FormControl(null, [Validators.required]),
+    sumFrom: new FormControl(null, [Validators.required, Validators.min(0.01)]),
+    sumTo: new FormControl(null, [Validators.required, Validators.min(0.01)]),
+    rate: new FormControl(null)
   })
 
   ngOnInit() {

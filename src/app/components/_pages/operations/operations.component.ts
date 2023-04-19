@@ -14,17 +14,16 @@ import {
   FormControl
 } from '@angular/forms'
 import { debounceTime, map, take } from 'rxjs'
-import { Store } from '@ngrx/store'
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatDividerModule } from '@angular/material/divider'
-import { MatNativeDateModule } from '@angular/material/core'
-import { MatExpansionModule } from '@angular/material/expansion'
 import { MatIconModule } from '@angular/material/icon'
 import { MatSelectModule } from '@angular/material/select'
 import { MatInputModule } from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button'
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
+import { Store } from '@ngrx/store'
+import { IState } from '@store/store'
 import {
   addOperation,
   deleteOperation,
@@ -40,12 +39,10 @@ import {
   operationsSelector,
   walletsSelector
 } from '@store/selectors'
-import { IState } from '@store/store'
 import { IPeriod, OperationType, Sort } from '@app/interfaces'
 import { DateRangePickerComponent } from '@components/date-range-picker/date-range-picker.component'
-import { CardComponent } from '@components/card/card.component'
 import { INITIAL_MONTH_PERIOD } from '@constants/constants'
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'
+import { CardComponent } from '@components/card/card.component'
 import { AddEditOperationComponent } from '@pages/operations/add-edit-operation/add-edit-operation.component'
 
 interface IFiltersForm {
@@ -62,21 +59,18 @@ interface IFiltersForm {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
     MatDividerModule,
-    MatExpansionModule,
     MatIconModule,
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatDialogModule,
     DateRangePickerComponent,
-    CardComponent,
-    MatDialogModule
+    CardComponent
   ]
 })
 export class OperationsComponent implements OnInit, OnDestroy {
@@ -95,7 +89,7 @@ export class OperationsComponent implements OnInit, OnDestroy {
   wallets$ = this.store.select(walletsSelector)
   categories$ = this.store
     .select(categoriesSelector)
-    .pipe(map(categories => categories[this.type]))
+    .pipe(map(categories => categories.filter(c => c.type === this.type)))
 
   ngOnInit() {
     this.store.dispatch(setPageTitle({ title: this.type.toUpperCase() }))

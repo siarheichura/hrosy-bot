@@ -141,19 +141,68 @@ export class Effects {
     )
   )
 
-  readonly updateCategories$ = createEffect(() =>
+  readonly addCategory$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(StoreActions.updateCategories),
-      switchMap(data =>
-        this.httpService.updateCategories(data.categories).pipe(
-          map(() => StoreActions.getCategories()),
-          catchError(error =>
-            of(StoreActions.updateCategoriesFailure({ error: error.message }))
-          )
+      ofType(StoreActions.addCategory),
+      switchMap(({ category }) =>
+        this.httpService.addCategory(category).pipe(
+          map(res => StoreActions.addCategorySuccess({ category: res.data })),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.addCategoryFailure({ error: err.message }))
+          })
         )
       )
     )
   )
+
+  readonly updateCategory$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.updateCategory),
+      switchMap(({ category }) =>
+        this.httpService.updateCategory(category).pipe(
+          map(res =>
+            StoreActions.updateCategorySuccess({ category: res.data })
+          ),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.updateCategoryFailure({ error: err.error }))
+          })
+        )
+      )
+    )
+  )
+
+  readonly deleteCategory$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StoreActions.deleteCategory),
+      switchMap(({ id }) =>
+        this.httpService.deleteCategory(id).pipe(
+          map(res =>
+            StoreActions.deleteCategorySuccess({ category: res.data })
+          ),
+          catchError(err => {
+            this.snackBarService.printInfoSnackBar('error', err.error)
+            return of(StoreActions.deleteCategoryFailure({ error: err.error }))
+          })
+        )
+      )
+    )
+  )
+
+  // readonly updateCategories$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(StoreActions.updateCategories),
+  //     switchMap(data =>
+  //       this.httpService.updateCategories(data.categories).pipe(
+  //         map(() => StoreActions.getCategories()),
+  //         catchError(error =>
+  //           of(StoreActions.updateCategoriesFailure({ error: error.message }))
+  //         )
+  //       )
+  //     )
+  //   )
+  // )
 
   // wallets
   readonly getWallets$ = createEffect(() =>

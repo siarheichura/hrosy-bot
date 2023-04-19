@@ -69,7 +69,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   constructor(private store: Store<IState>, private fb: FormBuilder) {}
 
   ngOnInit() {
-    this.store.dispatch(setPageTitle({ title: 'STATISTICS' }))
+    this.store.dispatch(setPageTitle({ title: 'STATISTICS (...fixing)' }))
 
     this.periodForm = this.fb.group({
       start: [dayjs().utc().startOf('month').toDate()],

@@ -4,7 +4,8 @@ export interface IAppState {
   operations: IDayOperations[]
   operation: IOperation
   options: IGetOperationOptions
-  categories: ICategories
+  // categories: ICategories
+  categories: ICategory[]
   wallets: IWallet[]
   currencies: string[]
   statistics: IStatistics
@@ -33,7 +34,23 @@ export interface IOperation {
 
 export interface IDayOperations {
   date: string
-  operations: IOperation[]
+  operations: {
+    id: string
+    wallet: {
+      id: string
+      name: string
+      currency: string
+    }
+    type: OperationType
+    category: {
+      id: string
+      name: string
+    }
+    sum: number
+    currency: string
+    comment: string
+    createdAt: string
+  }[]
 }
 
 export interface IWallet {
@@ -42,6 +59,12 @@ export interface IWallet {
   currency: string
   balance: number
   isMain: boolean
+}
+
+export interface ICategory {
+  id: string
+  name: string
+  type: OperationType
 }
 
 export interface ICategories {

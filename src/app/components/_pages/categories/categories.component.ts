@@ -1,27 +1,31 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   OnDestroy,
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { Store } from '@ngrx/store'
-import { map } from 'rxjs'
-import { LetModule } from '@ngrx/component'
-import { MatFormFieldModule } from '@angular/material/form-field'
-import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips'
-import { MatIconModule } from '@angular/material/icon'
 import { ReactiveFormsModule } from '@angular/forms'
+import { map, take } from 'rxjs'
+import { LetModule } from '@ngrx/component'
+import { MatIconModule } from '@angular/material/icon'
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'
+import { MatButtonModule } from '@angular/material/button'
+import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
+import { categoriesSelector } from '@store/selectors'
 import {
+  addCategory,
+  deleteCategory,
   getCategories,
   resetStore,
   setPageTitle,
-  updateCategories
+  updateCategory
 } from '@store/actions'
-import { categoriesSelector } from '@store/selectors'
-import { ButtonComponent } from '@components/button/button.component'
-import { ICategories } from '@app/interfaces'
+import { CardComponent } from '@components/card/card.component'
+import { AddEditCategoryComponent } from '@pages/categories/add-edit-category/add-edit-category.component'
+import { OPERATION_TYPES } from '@constants/enums'
 
 @Component({
   selector: 'app-categories',
@@ -31,79 +35,58 @@ import { ICategories } from '@app/interfaces'
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    MatFormFieldModule,
-    MatChipsModule,
-    MatIconModule,
     ReactiveFormsModule,
-    ButtonComponent,
-    LetModule
+    LetModule,
+    MatIconModule,
+    MatDialogModule,
+    MatButtonModule,
+    CardComponent
   ]
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
-  categories$ = this.store.select(categoriesSelector)
+  store: Store<IState> = inject(Store)
+  dialog = inject(MatDialog)
 
-  constructor(private store: Store<IState>) {}
+  categories$ = this.store.select(categoriesSelector).pipe(
+    map(categories => ({
+      expense: categories.filter(c => c.type === OPERATION_TYPES.EXPENSE),
+      income: categories.filter(c => c.type === OPERATION_TYPES.INCOME)
+    }))
+  )
 
   ngOnInit(): void {
     this.store.dispatch(setPageTitle({ title: 'CATEGORIES' }))
     this.store.dispatch(getCategories())
   }
 
-  // refactor: use one method for both expense and income categories
-  removeExpenseCategory(index: number): void {
-    this.categories$ = this.categories$.pipe(
-      map(categories => {
-        return {
-          ...categories,
-          expense: categories.expense.filter((category, i) => i !== index)
+  openAddEditDialog(title: string, id?: string) {
+    const data = { title, id }
+
+    this.dialog
+      .open(AddEditCategoryComponent, { data })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(data => {
+        if (data) {
+          this.store.dispatch(
+            data.id
+              ? updateCategory({ category: data })
+              : addCategory({ category: data })
+          )
         }
       })
-    )
   }
 
-  addExpenseCategory(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim()
-
-    if (value) {
-      this.categories$ = this.categories$.pipe(
-        map(categories => ({
-          ...categories,
-          expense: [...categories.expense, value]
-        }))
-      )
-    }
-
-    event.chipInput!.clear()
+  addCategoryHandler() {
+    this.openAddEditDialog('Add category')
   }
 
-  removeIncomeCategory(index: number): void {
-    this.categories$ = this.categories$.pipe(
-      map(categories => {
-        return {
-          ...categories,
-          income: categories.income.filter((category, i) => i !== index)
-        }
-      })
-    )
+  editCategoryHandler(id: string) {
+    this.openAddEditDialog('Edit category', id)
   }
 
-  addIncomeCategory(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim()
-
-    if (value) {
-      this.categories$ = this.categories$.pipe(
-        map(categories => ({
-          ...categories,
-          income: [...categories.income, value]
-        }))
-      )
-    }
-
-    event.chipInput!.clear()
-  }
-
-  saveHandler(categories: ICategories): void {
-    this.store.dispatch(updateCategories({ categories }))
+  deleteCategoryHandler(id: string) {
+    this.store.dispatch(deleteCategory({ id }))
   }
 
   ngOnDestroy() {
