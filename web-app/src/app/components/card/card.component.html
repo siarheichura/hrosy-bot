@@ -1,18 +1,23 @@
-<mat-card>
-  <mat-card-content
-    [@translate]="translated ? 'closed' : 'open'"
-    (click)="translate()">
+<mat-card [@bounceInOnEnter] [@bounceOutOnLeave]>
+  <mat-card-content (click)="toggleActions()">
     <div class="card-content-wrap">
-      <ng-content></ng-content>
-    </div>
+      <div
+        [ngStyle]="{ opacity: actionsVisible ? 0.2 : 1, transition: '0.3s' }">
+        <ng-content></ng-content>
+      </div>
 
-    <div class="card-actions">
-      <button mat-icon-button (click)="editBtnHandler($event, id)">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button (click)="deleteBtnHandler($event, id)">
-        <mat-icon>delete</mat-icon>
-      </button>
+      <div
+        class="card-actions"
+        *ngIf="actionsVisible"
+        [@bounceInOnEnter]
+        [@bounceOutOnLeave]>
+        <button mat-icon-button (click)="editBtnHandler($event, id)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteBtnHandler($event, id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
