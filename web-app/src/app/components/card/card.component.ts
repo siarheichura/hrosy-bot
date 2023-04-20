@@ -9,8 +9,11 @@ import {
 import { CommonModule } from '@angular/common'
 import { MatCardModule } from '@angular/material/card'
 import { MatIconModule } from '@angular/material/icon'
-import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatButtonModule } from '@angular/material/button'
+import {
+  bounceInOnEnterAnimation,
+  bounceOutOnLeaveAnimation
+} from 'angular-animations'
 
 @Component({
   selector: 'app-card',
@@ -19,48 +22,32 @@ import { MatButtonModule } from '@angular/material/button'
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule],
-  animations: [
-    trigger('translate', [
-      state(
-        'open',
-        style({
-          transform: 'translate(0)'
-        })
-      ),
-      state(
-        'closed',
-        style({
-          transform: 'translate(-100px)'
-        })
-      ),
-      transition('open => closed', [animate('0.1s')]),
-      transition('closed => open', [animate('0.1s')])
-    ])
-  ]
+  animations: [bounceInOnEnterAnimation(), bounceOutOnLeaveAnimation()]
 })
 export class CardComponent implements OnInit {
   @Output() edit = new EventEmitter<string>()
   @Output() delete = new EventEmitter<string>()
   @Input() id: string
-  translated = false
+
+  actionsVisible = false
+
+  toggleActions() {
+    this.actionsVisible = !this.actionsVisible
+  }
 
   constructor() {}
 
   ngOnInit() {}
 
-  translate() {
-    this.translated = !this.translated
-  }
-
   editBtnHandler(event: MouseEvent, id: string) {
     event.stopPropagation()
     this.edit.emit(id)
-    this.translate()
+    this.toggleActions()
   }
 
   deleteBtnHandler(event: MouseEvent, id: string) {
     event.stopPropagation()
     this.delete.emit(id)
-    this.translate()
+    this.toggleActions()
   }
 }

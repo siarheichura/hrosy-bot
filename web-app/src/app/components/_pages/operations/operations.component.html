@@ -49,19 +49,27 @@
   </mat-form-field>
 </div>
 
-<div class="day-card" *ngFor="let dayOperations of operations$ | async">
+<div class="day" *ngFor="let dayOperations of operations$ | async">
   <mat-divider></mat-divider>
-  <p class="day-card_date">📅 {{ dayOperations.date | date : 'MM/dd/yyyy' }}</p>
+  <p class="day_date">📅 {{ dayOperations.date | date : 'MM/dd/yyyy' }}</p>
   <app-card
     *ngFor="let operation of dayOperations.operations"
     [id]="operation.id"
     (edit)="editOperationHandler($event)"
     (delete)="deleteOperationHandler($event)">
-    <div class="day-card_operation-title">
-      <p>{{ operation.category.name }}</p>
-      <p>💰 {{ operation.sum }}{{ operation.wallet.currency }}</p>
-      <p>{{ operation.wallet.name }}</p>
+    <div class="day_operation">
+      <div>
+        <p class="day_operation-bold">{{ operation.category.name }}</p>
+        <p *ngIf="operation.comment">💬{{ operation.comment }}</p>
+      </div>
+      <div>
+        <p class="day_operation-bold">
+          💰{{ operation.sum }}{{ operation.wallet.currency }}
+        </p>
+        <p disabled style="font-size: 0.9rem; text-align: end">
+          {{ operation.wallet.name }}
+        </p>
+      </div>
     </div>
-    <mat-hint *ngIf="operation.comment"> 💬 {{ operation.comment }} </mat-hint>
   </app-card>
 </div>

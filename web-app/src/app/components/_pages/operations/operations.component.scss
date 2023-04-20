@@ -1,4 +1,4 @@
-@import "src/variables";
+@import 'src/variables';
 
 :host {
   width: 100%;
@@ -31,7 +31,7 @@
     }
   }
 
-  .day-card {
+  .day {
     padding: 5px 10px;
     display: flex;
     flex-direction: column;
@@ -45,16 +45,15 @@
     &_operation {
       padding: 5px 10px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
       background-color: $secondary-bg-color;
       color: $text-color;
       border-radius: 5px;
 
-      &-title {
-        display: flex;
-        justify-content: space-between;
+      &-bold {
         font-size: 1.1rem;
-        font-weight: 500;
+        font-weight: 600;
       }
     }
   }
