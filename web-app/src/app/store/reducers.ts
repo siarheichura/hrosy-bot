@@ -194,12 +194,6 @@ export const reducers = createReducer(
     error: action.error
   })),
 
-  // page title
-  on(Actions.setPageTitle, (state, action) => ({
-    ...state,
-    pageTitle: action.title
-  })),
-
   // reset store
   on(Actions.resetStore, state => ({
     ...state,

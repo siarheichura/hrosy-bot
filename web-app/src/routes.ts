@@ -9,12 +9,20 @@ export const routes: Routes = [
     data: { state: 'index' }
   },
   {
-    path: `${ROUTES_ENUM.OPERATIONS}/:type`,
+    path: `${ROUTES_ENUM.OPERATIONS}`,
     loadComponent: () =>
       import('@pages/operations/operations.component').then(
         m => m.OperationsComponent
       )
   },
+  // REMOVE
+  // {
+  //   path: `${ROUTES_ENUM.OPERATIONS}/:type`,
+  //   loadComponent: () =>
+  //     import('@pages/operations/operations.component').then(
+  //       m => m.OperationsComponent
+  //     )
+  // },
   {
     path: ROUTES_ENUM.CATEGORIES,
     loadComponent: () =>

@@ -31,7 +31,6 @@ import {
   getOperation,
   getOperations,
   resetStore,
-  setPageTitle,
   updateOperation
 } from '@store/actions'
 import {
@@ -44,6 +43,7 @@ import { DateRangePickerComponent } from '@components/date-range-picker/date-ran
 import { INITIAL_MONTH_PERIOD } from '@constants/constants'
 import { CardComponent } from '@components/card/card.component'
 import { AddEditOperationComponent } from '@pages/operations/add-edit-operation/add-edit-operation.component'
+import { MatMenuModule } from '@angular/material/menu'
 
 interface IFiltersForm {
   wallets: FormControl<string[]>
@@ -70,7 +70,8 @@ interface IFiltersForm {
     MatIconModule,
     MatDialogModule,
     DateRangePickerComponent,
-    CardComponent
+    CardComponent,
+    MatMenuModule
   ]
 })
 export class OperationsComponent implements OnInit, OnDestroy {
@@ -80,8 +81,9 @@ export class OperationsComponent implements OnInit, OnDestroy {
   router = inject(Router)
   dialog = inject(MatDialog)
 
-  type: OperationType = this.route.snapshot.params.type
+  type: OperationType = 'expense'
   isFilterMenuExpanded: boolean = false
+  period: IPeriod = INITIAL_MONTH_PERIOD
   sort: Sort = 1
   filtersForm: FormGroup<IFiltersForm>
 
@@ -92,7 +94,6 @@ export class OperationsComponent implements OnInit, OnDestroy {
     .pipe(map(categories => categories.filter(c => c.type === this.type)))
 
   ngOnInit() {
-    this.store.dispatch(setPageTitle({ title: this.type.toUpperCase() }))
     this.initFiltersForm()
     this.dispatchGetOperations()
   }
@@ -120,15 +121,8 @@ export class OperationsComponent implements OnInit, OnDestroy {
   }
 
   changePeriodHandler(period: IPeriod) {
-    this.store.dispatch(
-      getOperations({
-        options: {
-          type: this.type,
-          period,
-          filters: { sort: this.sort, ...this.filtersForm.value }
-        }
-      })
-    )
+    this.period = period
+    this.dispatchGetOperations()
   }
 
   initFiltersForm() {
@@ -148,11 +142,16 @@ export class OperationsComponent implements OnInit, OnDestroy {
       getOperations({
         options: {
           type: this.type,
-          period: INITIAL_MONTH_PERIOD,
+          period: this.period,
           filters: { sort: this.sort, ...this.filtersForm.value }
         }
       })
     )
+  }
+
+  typesMenuItemClickHandler(type: OperationType) {
+    this.type = type
+    this.dispatchGetOperations()
   }
 
   sortClickHandler() {

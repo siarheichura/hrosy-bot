@@ -41,11 +41,6 @@ export const currenciesSelector = createSelector(
   state => state.currencies
 )
 
-export const pageTitleSelector = createSelector(
-  selectFeature,
-  state => state.pageTitle
-)
-
 export const loadingSelector = createSelector(
   selectFeature,
   state => state.loading

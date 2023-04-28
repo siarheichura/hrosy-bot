@@ -5,15 +5,17 @@ import {
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { NavigationStart, Router } from '@angular/router'
-import { Subject } from 'rxjs'
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router'
+import { tap } from 'rxjs'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatIconModule } from '@angular/material/icon'
 import { MatButtonModule } from '@angular/material/button'
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
-import { pageTitleSelector, walletsSelector } from '@store/selectors'
+import { walletsSelector } from '@store/selectors'
+import { MENU_BUTTONS } from '@constants/constants'
+import { IWallet } from '@app/interfaces'
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 
 @UntilDestroy()
 @Component({
@@ -27,21 +29,27 @@ import { pageTitleSelector, walletsSelector } from '@store/selectors'
 export class HeaderComponent implements OnInit {
   store: Store<IState> = inject(Store)
   router = inject(Router)
+  route = inject(ActivatedRoute)
 
-  wallets$ = this.store.select(walletsSelector)
-  title$ = this.store.select(pageTitleSelector)
+  menuItems = MENU_BUTTONS
+  mainWallet: IWallet
+  pageTitle: string = this.route.snapshot.params.type
 
-  backButtonVisible$: Subject<boolean> = new Subject()
+  wallets$ = this.store.select(walletsSelector).pipe(
+    tap(wallets => {
+      this.mainWallet = wallets?.find(w => w?.isMain)
+    })
+  )
 
   ngOnInit(): void {
     this.router.events.pipe(untilDestroyed(this)).subscribe(event => {
       if (event instanceof NavigationStart) {
-        this.backButtonVisible$.next(event.url !== '/')
+        this.pageTitle = event.url.replace('/', '')
       }
     })
   }
 
-  backHandler() {
-    void this.router.navigate([''])
+  menuItemClickHandler(item: any) {
+    void this.router.navigate([item.route])
   }
 }

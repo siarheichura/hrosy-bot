@@ -2,8 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnDestroy,
-  OnInit
+  OnDestroy
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Router } from '@angular/router'
@@ -19,7 +18,6 @@ import {
   addWallet,
   deleteWallet,
   resetStore,
-  setPageTitle,
   updateWallet
 } from '@store/actions'
 import { AddEditWalletComponent } from '@pages/wallets/add-edit-wallet/add-edit-wallet.component'
@@ -41,17 +39,13 @@ import { SnackBarService } from '@services/snack-bar.service'
     CardComponent
   ]
 })
-export class WalletsComponent implements OnInit, OnDestroy {
+export class WalletsComponent implements OnDestroy {
   store: Store<IState> = inject(Store)
   router = inject(Router)
   dialog = inject(MatDialog)
   snackBarService = inject(SnackBarService)
 
   wallets$ = this.store.select(walletsSelector)
-
-  ngOnInit(): void {
-    this.store.dispatch(setPageTitle({ title: 'WALLETS' }))
-  }
 
   openAddEditDialog(title: string, id?: string) {
     const data = { title, id }

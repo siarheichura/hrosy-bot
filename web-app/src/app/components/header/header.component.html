@@ -1,22 +1,28 @@
-<div>
-  <button
-    mat-icon-button
-    *ngIf="backButtonVisible$ | async"
-    (click)="backHandler()">
-    <mat-icon>keyboard_backspace</mat-icon>
-  </button>
-</div>
-
-<div>
-  {{ title$ | async }}
-</div>
-
-<button mat-icon-button [matMenuTriggerFor]="menu">
-  <mat-icon>balance</mat-icon>
+<button
+  mat-button
+  [matMenuTriggerFor]="mainMenu"
+  aria-label="Example icon-button with a menu">
+  <mat-icon>more_vert</mat-icon>
+  {{ pageTitle | titlecase }}
 </button>
 
-<mat-menu #menu="matMenu">
+<button mat-button [matMenuTriggerFor]="walletsMenu">
+  <mat-icon>balance</mat-icon>
+  {{ mainWallet?.balance }}{{ mainWallet?.currency }}
+</button>
+
+<mat-menu #walletsMenu="matMenu">
   <div disabled mat-menu-item *ngFor="let wallet of wallets$ | async">
     {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}
   </div>
+</mat-menu>
+
+<mat-menu #mainMenu="matMenu">
+  <button
+    mat-menu-item
+    *ngFor="let item of menuItems"
+    (click)="menuItemClickHandler(item)">
+    <mat-icon>{{ item.icon }}</mat-icon>
+    <span>{{ item.name }}</span>
+  </button>
 </mat-menu>
