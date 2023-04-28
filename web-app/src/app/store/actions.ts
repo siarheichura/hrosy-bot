@@ -215,7 +215,7 @@ export const getStatistics = createAction(
 )
 export const getStatisticsSuccess = createAction(
   '[STATISTICS] get statistics success',
-  props<{ statistics: IStatistics }>()
+  props<{ statistics: IStatistics[] }>()
 )
 export const getStatisticsFailure = createAction(
   '[STATISTICS] get statistics failure',

@@ -4,8 +4,16 @@ import utc from 'dayjs/plugin/utc'
 import { UserModel, IUser } from '../models/User'
 import { OperationModel, IOperation } from '../models/Operation'
 import { WalletModel, IWallet } from '../models/Wallet'
-import { ICategories, IDayOperations, OperationType } from '../shared/interfaces'
-import { BASIC_EXPENSE_CATEGORIES, BASIC_INCOME_CATEGORIES, BASIC_WALLETS } from '../telegram/constants'
+import {
+  ICategories,
+  IDayOperations,
+  OperationType
+} from '../shared/interfaces'
+import {
+  BASIC_EXPENSE_CATEGORIES,
+  BASIC_INCOME_CATEGORIES,
+  BASIC_WALLETS
+} from '../telegram/constants'
 import { OPERATION_TYPES } from '../shared/enums'
 import { ITransfer, TransferModel } from '../models/Transfer'
 import { TransferDto } from './dtos/transfer.dto'
@@ -15,7 +23,6 @@ import { CategoryDto } from './dtos/category.dto'
 import { WalletDto } from './dtos/wallet.dto'
 
 dayjs.extend(utc)
-
 
 class Service {
   // user
@@ -29,23 +36,35 @@ class Service {
     })
 
     // add initial user wallets to db
-    await Promise.all(BASIC_WALLETS.map(wallet => WalletModel.create({
-      user: addedUser._id,
-      name: wallet.name,
-      isMain: wallet.isMain
-    })))
+    await Promise.all(
+      BASIC_WALLETS.map(wallet =>
+        WalletModel.create({
+          user: addedUser._id,
+          name: wallet.name,
+          isMain: wallet.isMain
+        })
+      )
+    )
 
     // add initial user categories to db
-    await Promise.all(BASIC_EXPENSE_CATEGORIES.map(c => CategoryModel.create({
-      user: addedUser._id,
-      name: c,
-      type: OPERATION_TYPES.EXPENSE
-    })))
-    await Promise.all(BASIC_INCOME_CATEGORIES.map(c => CategoryModel.create({
-      user: addedUser._id,
-      name: c,
-      type: OPERATION_TYPES.INCOME
-    })))
+    await Promise.all(
+      BASIC_EXPENSE_CATEGORIES.map(c =>
+        CategoryModel.create({
+          user: addedUser._id,
+          name: c,
+          type: OPERATION_TYPES.EXPENSE
+        })
+      )
+    )
+    await Promise.all(
+      BASIC_INCOME_CATEGORIES.map(c =>
+        CategoryModel.create({
+          user: addedUser._id,
+          name: c,
+          type: OPERATION_TYPES.INCOME
+        })
+      )
+    )
 
     return addedUser
   }
@@ -58,8 +77,13 @@ class Service {
   getOperations = async (
     chatId: string,
     type: OperationType,
-    period: { start: string, end: string },
-    filters: { sort: 1 | -1, wallets?: string[], categories?: string[], comment?: string }
+    period: { start: string; end: string },
+    filters: {
+      sort: 1 | -1
+      wallets?: string[]
+      categories?: string[]
+      comment?: string
+    }
   ): Promise<IDayOperations[]> => {
     const user = await UserModel.findOne({ chatId }, { _id: 1 })
     const start = dayjs(period.start).utc(true).startOf('day').toDate()
@@ -72,9 +96,13 @@ class Service {
           user: user!._id,
           type,
           createdAt: { $gte: start, $lte: end },
-          wallet: wallets ? { $in: wallets.map(id => new ObjectId(id)) } : { $exists: true },
+          wallet: wallets
+            ? { $in: wallets.map(id => new ObjectId(id)) }
+            : { $exists: true },
           category: categories ? { $in: categories } : { $exists: true },
-          comment: comment ? { $regex: comment, $options: 'i' } : { $exists: true }
+          comment: comment
+            ? { $regex: comment, $options: 'i' }
+            : { $exists: true }
         }
       },
       {
@@ -83,9 +111,7 @@ class Service {
           localField: 'wallet',
           foreignField: '_id',
           as: 'wallet',
-          pipeline: [
-            { $project: { _id: 0, id: '$_id', name: 1, currency: 1 } }
-          ]
+          pipeline: [{ $project: { _id: 0, id: '$_id', name: 1, currency: 1 } }]
         }
       },
       {
@@ -94,9 +120,7 @@ class Service {
           localField: 'category',
           foreignField: '_id',
           as: 'category',
-          pipeline: [
-            { $project: { _id: 0, id: '$_id', name: 1 } }
-          ]
+          pipeline: [{ $project: { _id: 0, id: '$_id', name: 1 } }]
         }
       },
       {
@@ -153,7 +177,10 @@ class Service {
     }
   }
 
-  updateOperation = async (operationId: string, operation: Partial<IOperation>) => {
+  updateOperation = async (
+    operationId: string,
+    operation: Partial<IOperation>
+  ) => {
     try {
       const updatedOperation = await OperationModel.findByIdAndUpdate(
         operationId,
@@ -207,7 +234,10 @@ class Service {
 
   addWallet = async (userId: string, wallet: Partial<IWallet>) => {
     try {
-      const createdWallet = await WalletModel.create({ ...wallet, user: userId })
+      const createdWallet = await WalletModel.create({
+        ...wallet,
+        user: userId
+      })
 
       if (wallet.isMain) {
         await WalletModel.updateMany(
@@ -225,7 +255,9 @@ class Service {
 
   deleteWallet = async (id: string) => {
     try {
-      const deletedWallet = await WalletModel.findByIdAndUpdate(id, { deletedAt: Date.now() })
+      const deletedWallet = await WalletModel.findByIdAndUpdate(id, {
+        deletedAt: Date.now()
+      })
 
       if (!deletedWallet) {
         throw 'wallet is not found'
@@ -278,8 +310,10 @@ class Service {
         { $group: { _id: '$type', sum: { $sum: '$sum' } } },
         { $project: { _id: 0, type: '$_id', sum: 1 } }
       ])
-      const incomesSum = operationsTotal.find(i => i.type === OPERATION_TYPES.INCOME)?.sum || 0
-      const expensesSum = operationsTotal.find(i => i.type === OPERATION_TYPES.EXPENSE)?.sum || 0
+      const incomesSum =
+        operationsTotal.find(i => i.type === OPERATION_TYPES.INCOME)?.sum || 0
+      const expensesSum =
+        operationsTotal.find(i => i.type === OPERATION_TYPES.EXPENSE)?.sum || 0
 
       const transfersFromTotal = await TransferModel.aggregate([
         { $match: { from: new ObjectId(walletId) } },
@@ -293,8 +327,12 @@ class Service {
       ])
       const transferToSum = transfersToTotal[0]?.sum || 0
 
-
-      const balance = +(incomesSum - expensesSum + transferToSum - transferFromSum).toFixed(2)
+      const balance = +(
+        incomesSum -
+        expensesSum +
+        transferToSum -
+        transferFromSum
+      ).toFixed(2)
 
       await WalletModel.findByIdAndUpdate(walletId, { balance })
     } catch (err) {
@@ -319,8 +357,10 @@ class Service {
     userId: string,
     walletId: string,
     type: OperationType,
-    period: { start: string, end: string }
-  ): Promise<{ report: { category: string[], sum: number } [], total: number }[]> => {
+    period: { start: string; end: string }
+  ): Promise<
+    { report: { category: string[]; sum: number }[]; total: number }[]
+  > => {
     const start = dayjs(period.start).utc(true).startOf('day').toDate()
     const end = dayjs(period.end).utc(true).endOf('day').toDate()
 
@@ -333,18 +373,45 @@ class Service {
           createdAt: { $gte: start, $lte: end }
         }
       },
-      { $group: { _id: '$category', sum: { $sum: '$sum' }, currency: { $first: '$currency' } } },
-      { $project: { _id: 0, category: '$_id', sum: { $sum: { $round: ['$sum', 2] } }, currency: 1 } },
-      { $sort: { sum: -1 } },
-      { $group: { _id: null, report: { $push: '$$ROOT' }, total: { $sum: '$sum' } } },
-      { $project: { _id: 0, report: '$report', total: { $round: ['$total', 2] } } }
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      {
+        $lookup: {
+          from: 'wallets',
+          localField: 'wallet',
+          foreignField: '_id',
+          as: 'wallet'
+        }
+      },
+      {
+        $group: {
+          _id: '$category',
+          sum: { $sum: { $round: ['$sum', 2] } },
+          currency: { $first: '$wallet.currency' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          category: { $first: '$_id.name' },
+          currency: { $first: '$currency' },
+          sum: 1
+        }
+      },
+      { $sort: { sum: -1 } }
     ])
   }
 
   // transfers
   getTransfers = async (
     userId: string,
-    period: { start: string, end: string }
+    period: { start: string; end: string }
   ) => {
     try {
       const start = dayjs(period.start).utc(true).startOf('day').toDate()
@@ -377,7 +444,11 @@ class Service {
     }
   }
 
-  updateTransfer = async (userId: string, id: string, data: Partial<ITransfer>) => {
+  updateTransfer = async (
+    userId: string,
+    id: string,
+    data: Partial<ITransfer>
+  ) => {
     try {
       const updatedTransfer = await TransferModel.findByIdAndUpdate(
         id,
@@ -422,8 +493,9 @@ class Service {
         user: userId,
         deletedAt: null,
         type: type || { $exists: true }
-      })
-        .transform(categories => categories.map(category => new CategoryDto(category)))
+      }).transform(categories =>
+        categories.map(category => new CategoryDto(category))
+      )
     } catch (err) {
       console.log(err)
       throw err.message
@@ -463,7 +535,9 @@ class Service {
   deleteCategory = async (id: string) => {
     try {
       // const deletedCategory = await CategoryModel.findByIdAndDelete(id)
-      const deletedCategory = await CategoryModel.findByIdAndUpdate(id, { deletedAt: Date.now() })
+      const deletedCategory = await CategoryModel.findByIdAndUpdate(id, {
+        deletedAt: Date.now()
+      })
 
       if (!deletedCategory) {
         throw 'category is not found'
@@ -476,7 +550,10 @@ class Service {
     }
   }
 
-  updateCategories = async (chatId: string, categories: ICategories): Promise<{ message: string }> => {
+  updateCategories = async (
+    chatId: string,
+    categories: ICategories
+  ): Promise<{ message: string }> => {
     await UserModel.findOneAndUpdate({ chatId }, { categories })
     return { message: 'categories updated' }
   }
