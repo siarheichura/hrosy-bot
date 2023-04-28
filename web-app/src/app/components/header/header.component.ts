@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.pipe(untilDestroyed(this)).subscribe(event => {
       if (event instanceof NavigationStart) {
-        this.pageTitle = event.url.replace('/', '')
+        this.pageTitle = event.url.replace('/', '') || 'Operations'
       }
     })
   }
