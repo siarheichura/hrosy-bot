@@ -1,4 +1,9 @@
 :host {
+  .menu {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .stat {
     display: flex;
     flex-direction: column;
@@ -11,6 +16,13 @@
         font-size: 1.2rem;
         font-weight: 600;
       }
+    }
+
+    &_total {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 1.2rem;
+      font-weight: 600;
     }
   }
 }
