@@ -1,15 +1,20 @@
 import { Routes } from '@angular/router'
 import { ROUTES_ENUM } from '@constants/enums'
-import { MainComponent } from '@pages/main/main.component'
 
 export const routes: Routes = [
+  // REMOVE THIS AND MAIN COMPONENT
+  // {
+  //   path: ROUTES_ENUM.INDEX,
+  //   component: MainComponent,
+  //   data: { state: 'index' }
+  // },
   {
     path: ROUTES_ENUM.INDEX,
-    component: MainComponent,
-    data: { state: 'index' }
+    redirectTo: ROUTES_ENUM.OPERATIONS,
+    pathMatch: 'full'
   },
   {
-    path: `${ROUTES_ENUM.OPERATIONS}`,
+    path: ROUTES_ENUM.OPERATIONS,
     loadComponent: () =>
       import('@pages/operations/operations.component').then(
         m => m.OperationsComponent
