@@ -1,16 +1,4 @@
 :host {
-  .picker {
-    width: 100%;
-  }
-
-  mat-button-toggle-group {
-    width: 100%;
-
-    mat-button-toggle {
-      width: 50%;
-    }
-  }
-
   .stat {
     display: flex;
     flex-direction: column;

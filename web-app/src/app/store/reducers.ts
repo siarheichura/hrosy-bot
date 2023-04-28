@@ -97,13 +97,6 @@ export const reducers = createReducer(
     loading: false
   })),
 
-  // on(Actions.updateCategories, state => ({ ...state, loading: true })),
-  // on(Actions.updateCategoriesSuccess, (state, action) => ({
-  //   ...state,
-  //   categories: action.categories,
-  //   loading: false
-  // })),
-
   // wallets
   on(Actions.getWallets, state => ({ ...state, loading: true })),
   on(Actions.getWalletsSuccess, (state, action) => ({

@@ -4,11 +4,10 @@ export interface IAppState {
   operations: IDayOperations[]
   operation: IOperation
   options: IGetOperationOptions
-  // categories: ICategories
   categories: ICategory[]
   wallets: IWallet[]
   currencies: string[]
-  statistics: IStatistics
+  statistics: IStatistics[]
   transfers: ITransfer[]
   pageTitle: string
   loading: boolean
@@ -89,8 +88,11 @@ export interface IPeriod {
 }
 
 export interface IStatistics {
-  report: { category: string; sum: number; currency: string }[]
-  total: number
+  category: string
+  sum: number
+  currency: string
+  // report: { category: string; sum: number; currency: string }[]
+  // total: number
 }
 
 export interface ITransfer {

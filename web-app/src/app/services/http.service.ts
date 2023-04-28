@@ -189,15 +189,11 @@ export class HttpService {
   }
 
   // statistics
-  getStatistics(
-    type: OperationType,
-    walletId: string,
-    period: IPeriod
-  ): Observable<IHttpResponse<IStatistics>> {
+  getStatistics(type: OperationType, walletId: string, period: IPeriod) {
     const start = period.start.format(environment.dateFormat)
     const end = period.end.format(environment.dateFormat)
 
-    return this.http.get<IHttpResponse<IStatistics>>(
+    return this.http.get<IHttpResponse<IStatistics[]>>(
       `${environment.apiUrl}statistics/${type}/${walletId}/${start}/${end}`
     )
   }

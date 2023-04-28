@@ -9,27 +9,34 @@ import { ITransfer } from '../models/Transfer'
 
 dayjs.extend(utc)
 
-
 class Controllers {
-
   // operations
   getOperations: RequestHandler = async (req, res) => {
     try {
       const { chatId } = req.headers as { chatId: string }
-      const { type, start, end } = req.params as { type: OperationType, start: string, end: string }
-      const {
-        sort,
-        wallets,
-        categories,
-        comment
-      } = req.query as { sort: '1' | '-1', wallets?: string, categories?: string, comment?: string }
+      const { type, start, end } = req.params as {
+        type: OperationType
+        start: string
+        end: string
+      }
+      const { sort, wallets, categories, comment } = req.query as {
+        sort: '1' | '-1'
+        wallets?: string
+        categories?: string
+        comment?: string
+      }
 
-      const operations = await service.getOperations(chatId, type, { start, end }, {
-        sort: +sort as 1 | -1,
-        wallets: wallets?.split(','),
-        categories: categories?.split(','),
-        comment
-      })
+      const operations = await service.getOperations(
+        chatId,
+        type,
+        { start, end },
+        {
+          sort: +sort as 1 | -1,
+          wallets: wallets?.split(','),
+          categories: categories?.split(','),
+          comment
+        }
+      )
 
       res.send({ data: operations })
     } catch (err) {
@@ -54,19 +61,11 @@ class Controllers {
     try {
       const { userId } = req.headers as { userId: string }
       const body = req.body as Partial<IOperation>
-      // const { type, category, sum, currency, wallet, comment, createdAt } = req.body
-      // const operation = {
-      //   user: userId,
-      //   wallet,
-      //   type,
-      //   category,
-      //   sum,
-      //   currency,
-      //   comment,
-      //   createdAt
-      // }
 
-      const addedOperation = await service.addOperation({ ...body, user: userId })
+      const addedOperation = await service.addOperation({
+        ...body,
+        user: userId
+      })
 
       res.send({ data: addedOperation, message: 'operation added' })
     } catch (err) {
@@ -119,7 +118,11 @@ class Controllers {
   addWallet: RequestHandler = async (req, res) => {
     try {
       const { userId } = req.headers as { userId: string }
-      const body = req.body as { name: string, currency: string, isMain: boolean }
+      const body = req.body as {
+        name: string
+        currency: string
+        isMain: boolean
+      }
 
       const wallet = await service.addWallet(userId, body)
 
@@ -147,7 +150,11 @@ class Controllers {
     try {
       const { userId } = req.headers as { userId: string }
       const { id } = req.params as { id: string }
-      const body = req.body as { name: string, currency: string, isMain: boolean }
+      const body = req.body as {
+        name: string
+        currency: string
+        isMain: boolean
+      }
 
       const wallet = await service.updateWallet(userId, id, body)
 
@@ -175,7 +182,7 @@ class Controllers {
   addCategory: RequestHandler = async (req, res) => {
     try {
       const { userId } = req.headers as { userId: string }
-      const body = req.body as { name: string, type: OperationType }
+      const body = req.body as { name: string; type: OperationType }
 
       const category = await service.addCategory({ ...body, user: userId })
 
@@ -189,7 +196,7 @@ class Controllers {
   updateCategory: RequestHandler = async (req, res) => {
     try {
       const { id } = req.params as { id: string }
-      const body = req.body as { name: string, type: OperationType }
+      const body = req.body as { name: string; type: OperationType }
 
       const category = await service.updateCategory(id, { ...body })
 
@@ -213,33 +220,29 @@ class Controllers {
     }
   }
 
-  // updateCategories: RequestHandler = async (req, res) => {
-  //   const { chatId } = req.headers as { chatId: string }
-  //   const body = req.body as ICategories
-  //   const result = await service.updateCategories(chatId, body)
-  //   res.send(result)
-  // }
-
   // statistics
   getStatistics: RequestHandler = async (req, res) => {
     const { userId } = req.headers as { userId: string }
     const { type, walletId, start, end } = req.params as {
-      type: OperationType,
-      walletId: string,
-      start: string,
+      type: OperationType
+      walletId: string
+      start: string
       end: string
     }
 
-    const report = await service.getStatistics(userId, walletId, type, { start, end })
+    const data = await service.getStatistics(userId, walletId, type, {
+      start,
+      end
+    })
 
-    res.send({ data: report[0] })
+    res.send({ data })
   }
 
   // transfers
   getTransfers: RequestHandler = async (req, res) => {
     try {
       const { userId } = req.headers as { userId: string }
-      const { start, end } = req.params as { start: string, end: string }
+      const { start, end } = req.params as { start: string; end: string }
 
       const transfers = await service.getTransfers(userId, { start, end })
 
@@ -253,11 +256,11 @@ class Controllers {
     try {
       const { userId } = req.headers as { userId: string }
       const body = req.body as {
-        from: string,
-        to: string,
-        sumFrom: number,
-        sumTo: number,
-        rate: number,
+        from: string
+        to: string
+        sumFrom: number
+        sumTo: number
+        rate: number
         createdAt: string
       }
       const transfer = {
