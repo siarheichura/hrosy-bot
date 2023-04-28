@@ -233,11 +233,5 @@ export const getAllCurrenciesFailure = createAction(
   props<{ error: string }>()
 )
 
-// page title
-export const setPageTitle = createAction(
-  '[PAGE TITLE] set page title',
-  props<{ title: string }>()
-)
-
 // reset store
 export const resetStore = createAction('[RESET] reset store')

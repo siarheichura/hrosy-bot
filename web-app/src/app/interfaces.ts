@@ -9,7 +9,6 @@ export interface IAppState {
   currencies: string[]
   statistics: IStatistics[]
   transfers: ITransfer[]
-  pageTitle: string
   loading: boolean
   error: string
 }

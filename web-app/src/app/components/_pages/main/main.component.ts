@@ -17,7 +17,7 @@ export class MainComponent {
 
   navButtons = MENU_BUTTONS
 
-  onClick(route: string): void {
+  onClick(route: string) {
     void this.router.navigate([route], { relativeTo: this.route })
   }
 }

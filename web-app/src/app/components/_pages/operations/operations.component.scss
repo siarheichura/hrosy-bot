@@ -10,6 +10,11 @@
     button {
       color: $button-bg-color;
     }
+
+    &_left {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .filters {

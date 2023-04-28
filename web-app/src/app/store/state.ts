@@ -9,7 +9,6 @@ export const initState: IAppState = {
   currencies: [],
   statistics: null,
   transfers: null,
-  pageTitle: null,
   loading: false,
   error: null
 }

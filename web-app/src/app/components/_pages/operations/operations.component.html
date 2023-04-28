@@ -3,6 +3,17 @@
 
 <div class="menu">
   <div class="menu_left">
+    <button mat-mini-fab color="warn" (click)="addNewHandler()">
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <button mat-button [matMenuTriggerFor]="typesMenu">
+      <mat-icon>arrow_drop_down</mat-icon>
+      {{ type | titlecase }}
+    </button>
+  </div>
+
+  <div class="menu_right">
     <button mat-icon-button (click)="sortClickHandler()">
       <mat-icon>unfold_more</mat-icon>
     </button>
@@ -12,14 +23,15 @@
       <mat-icon>filter_alt</mat-icon>
     </button>
   </div>
-  <div class="menu_right">
-    <button mat-icon-button>
-      <mat-icon>bar_chart</mat-icon>
+
+  <mat-menu #typesMenu="matMenu">
+    <button mat-menu-item (click)="typesMenuItemClickHandler('expense')">
+      Expense
     </button>
-    <button mat-icon-button (click)="addNewHandler()">
-      <mat-icon>add</mat-icon>
+    <button mat-menu-item (click)="typesMenuItemClickHandler('income')">
+      Income
     </button>
-  </div>
+  </mat-menu>
 </div>
 
 <div class="filters" *ngIf="isFilterMenuExpanded" [formGroup]="filtersForm">

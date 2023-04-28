@@ -20,7 +20,6 @@ import {
   deleteCategory,
   getCategories,
   resetStore,
-  setPageTitle,
   updateCategory
 } from '@store/actions'
 import { CardComponent } from '@components/card/card.component'
@@ -55,7 +54,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   )
 
   ngOnInit(): void {
-    this.store.dispatch(setPageTitle({ title: 'CATEGORIES' }))
     this.store.dispatch(getCategories())
   }
 

@@ -22,7 +22,6 @@ import {
   deleteTransfer,
   getTransfers,
   resetStore,
-  setPageTitle,
   updateTransfer
 } from '@store/actions'
 import { DateRangePickerComponent } from '@components/date-range-picker/date-range-picker.component'
@@ -62,7 +61,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit() {
-    this.store.dispatch(setPageTitle({ title: 'TRANSFERS' }))
     this.store.dispatch(getTransfers({ period: INITIAL_MONTH_PERIOD }))
   }
 
