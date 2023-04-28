@@ -19,6 +19,9 @@ import { statisticsSelector, walletsSelector } from '@store/selectors'
 import { DateRangePickerComponent } from '@components/date-range-picker/date-range-picker.component'
 import { IPeriod, IWallet, OperationType } from '@app/interfaces'
 import { INITIAL_MONTH_PERIOD } from '@constants/constants'
+import { MatListModule } from '@angular/material/list'
+import { EmptyComponent } from '@components/empty/empty.component'
+import { LetModule } from '@ngrx/component'
 
 @Component({
   selector: 'app-statistics',
@@ -33,7 +36,10 @@ import { INITIAL_MONTH_PERIOD } from '@constants/constants'
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    DateRangePickerComponent
+    DateRangePickerComponent,
+    MatListModule,
+    EmptyComponent,
+    LetModule
   ]
 })
 export class StatisticsComponent implements OnInit, OnDestroy {

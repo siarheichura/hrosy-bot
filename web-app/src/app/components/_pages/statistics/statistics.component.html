@@ -1,31 +1,43 @@
 <app-date-range-picker
   (valueChanges)="changePeriodHandler($event)"></app-date-range-picker>
 
-<button mat-button [matMenuTriggerFor]="walletsMenu">
-  <mat-icon>arrow_drop_down</mat-icon>
-  {{ wallet?.name }}
-</button>
+<div class="menu">
+  <button mat-button [matMenuTriggerFor]="walletsMenu">
+    <mat-icon>arrow_drop_down</mat-icon>
+    {{ wallet?.name }}
+  </button>
 
-<button mat-button [matMenuTriggerFor]="typesMenu">
-  <mat-icon>arrow_drop_down</mat-icon>
-  {{ type | titlecase }}
-</button>
-
-<div class="stat" *ngIf="statistics$ | async as statistics">
-  <div *ngFor="let i of statistics.report" class="stat_item">
-    <div class="stat_item-title">
-      <p>{{ i.category }}</p>
-      <p>
-        {{ i.sum }}{{ i.currency }} ({{
-          i.sum / statistics.total | percent : '1.2-2'
-        }})
-      </p>
-    </div>
-    <mat-progress-bar
-      mode="determinate"
-      [value]="(i.sum / statistics.total) * 100"></mat-progress-bar>
-  </div>
+  <button mat-button [matMenuTriggerFor]="typesMenu">
+    <mat-icon>arrow_drop_down</mat-icon>
+    {{ type | titlecase }}
+  </button>
 </div>
+
+<ng-container *ngrxLet="statistics$ as statistics">
+  <div class="stat" *ngIf="statistics.report?.length">
+    <!--  <div class="stat" *ngIf="statistics$ | async as statistics">-->
+    <div *ngFor="let i of statistics.report" class="stat_item">
+      <div class="stat_item-title">
+        <p>{{ i.category }}</p>
+        <p>
+          {{ i.sum }}{{ i.currency }} ({{
+            i.sum / statistics.total | percent : '1.2-2'
+          }})
+        </p>
+      </div>
+      <mat-progress-bar
+        [value]="(i.sum / statistics.total) * 100"></mat-progress-bar>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="stat_total">
+      Total: {{ statistics.total + wallet?.currency }}
+    </div>
+  </div>
+
+  <app-empty *ngIf="!statistics.report?.length"></app-empty>
+</ng-container>
 
 <mat-menu #walletsMenu="matMenu">
   <button
