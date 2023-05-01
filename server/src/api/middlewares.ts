@@ -1,20 +1,38 @@
-import { NextFunction, Request, Response } from 'express'
+import { ErrorRequestHandler, RequestHandler } from 'express'
 import { UserModel } from '../models/User'
+import { ApiError } from './api-error'
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware: RequestHandler = async (req, res, next) => {
   const { hash, id } = req.headers
 
   if (!hash || !id) {
-    return res.status(401).send({ error: 'unauthorized' })
+    return ApiError.UnauthorizedError()
   }
 
   const user = await UserModel.findOne({ chatId: id })
   if (!user) {
-    return res.status(404).send({ error: 'no user' })
+    return ApiError.UnauthorizedError()
   }
 
   req.headers.chatId = id
   req.headers.userId = user.id
 
   next()
+}
+
+export const errorMiddleware: ErrorRequestHandler = async (
+  err,
+  req,
+  res,
+  next
+) => {
+  console.log('error middleware log: ', err)
+
+  if (err.status) {
+    return res.status(err.status).send({ message: err.message })
+  }
+
+  return res
+    .status(500)
+    .send({ message: `Unexpected server error: ${err.message}` })
 }

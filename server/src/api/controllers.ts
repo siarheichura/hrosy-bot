@@ -11,9 +11,9 @@ dayjs.extend(utc)
 
 class Controllers {
   // operations
-  getOperations: RequestHandler = async (req, res) => {
+  getOperations: RequestHandler = async (req, res, next) => {
     try {
-      const { chatId } = req.headers as { chatId: string }
+      const { userId } = req.headers as { userId: string }
       const { type, start, end } = req.params as {
         type: OperationType
         start: string
@@ -27,7 +27,7 @@ class Controllers {
       }
 
       const operations = await service.getOperations(
-        chatId,
+        userId,
         type,
         { start, end },
         {
@@ -40,24 +40,23 @@ class Controllers {
 
       res.send({ data: operations })
     } catch (err) {
-      console.log(err)
+      next(err)
     }
   }
 
-  getOperation: RequestHandler<{ id: string }> = async (req, res) => {
+  getOperation: RequestHandler = async (req, res, next) => {
     try {
-      const { id } = req.params
+      const { id } = req.params as { id: string }
 
       const operation = await service.getOperation(id)
 
       res.send({ data: operation })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  addOperation: RequestHandler = async (req, res) => {
+  addOperation: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const body = req.body as Partial<IOperation>
@@ -69,40 +68,37 @@ class Controllers {
 
       res.send({ data: addedOperation, message: 'operation added' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  updateOperation: RequestHandler<{ id: string }> = async (req, res) => {
+  updateOperation: RequestHandler = async (req, res, next) => {
     try {
-      const { id } = req.params
+      const { id } = req.params as { id: string }
       const body = req.body as IOperation
 
       const operation = await service.updateOperation(id, body)
 
       res.send({ data: operation, message: 'operation updated' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  deleteOperation: RequestHandler<{ id: string }> = async (req, res) => {
+  deleteOperation: RequestHandler = async (req, res, next) => {
     try {
-      const { id } = req.params
+      const { id } = req.params as { id: string }
 
       const operation = await service.deleteOperation(id)
 
       res.send({ data: operation, message: 'operation deleted' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
   // wallets
-  getWallets: RequestHandler = async (req, res) => {
+  getWallets: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
 
@@ -110,12 +106,11 @@ class Controllers {
 
       res.send({ data: wallets })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  addWallet: RequestHandler = async (req, res) => {
+  addWallet: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const body = req.body as {
@@ -128,12 +123,11 @@ class Controllers {
 
       res.send({ data: wallet, message: 'wallet added' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  deleteWallet: RequestHandler = async (req, res) => {
+  deleteWallet: RequestHandler = async (req, res, next) => {
     try {
       const { id } = req.params as { id: string }
 
@@ -141,12 +135,11 @@ class Controllers {
 
       res.send({ data: wallet, message: 'wallet deleted' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  updateWallet: RequestHandler = async (req, res) => {
+  updateWallet: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const { id } = req.params as { id: string }
@@ -160,13 +153,12 @@ class Controllers {
 
       res.send({ data: wallet, message: 'wallet updated' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
   // categories
-  getCategories: RequestHandler = async (req, res) => {
+  getCategories: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
 
@@ -174,12 +166,11 @@ class Controllers {
 
       res.send({ data: categories })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  addCategory: RequestHandler = async (req, res) => {
+  addCategory: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const body = req.body as { name: string; type: OperationType }
@@ -188,12 +179,11 @@ class Controllers {
 
       res.send({ data: category, message: 'category added' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  updateCategory: RequestHandler = async (req, res) => {
+  updateCategory: RequestHandler = async (req, res, next) => {
     try {
       const { id } = req.params as { id: string }
       const body = req.body as { name: string; type: OperationType }
@@ -202,12 +192,11 @@ class Controllers {
 
       res.send({ data: category, message: 'category updated' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  deleteCategory: RequestHandler = async (req, res) => {
+  deleteCategory: RequestHandler = async (req, res, next) => {
     try {
       const { id } = req.params as { id: string }
 
@@ -215,31 +204,34 @@ class Controllers {
 
       res.send({ data: category, message: 'category deleted' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
   // statistics
-  getStatistics: RequestHandler = async (req, res) => {
-    const { userId } = req.headers as { userId: string }
-    const { type, walletId, start, end } = req.params as {
-      type: OperationType
-      walletId: string
-      start: string
-      end: string
+  getStatistics: RequestHandler = async (req, res, next) => {
+    try {
+      const { userId } = req.headers as { userId: string }
+      const { type, walletId, start, end } = req.params as {
+        type: OperationType
+        walletId: string
+        start: string
+        end: string
+      }
+
+      const data = await service.getStatistics(userId, walletId, type, {
+        start,
+        end
+      })
+
+      res.send({ data })
+    } catch (err) {
+      next(err)
     }
-
-    const data = await service.getStatistics(userId, walletId, type, {
-      start,
-      end
-    })
-
-    res.send({ data })
   }
 
   // transfers
-  getTransfers: RequestHandler = async (req, res) => {
+  getTransfers: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const { start, end } = req.params as { start: string; end: string }
@@ -248,11 +240,11 @@ class Controllers {
 
       res.send({ data: transfers })
     } catch (err) {
-      console.log(err)
+      next(err)
     }
   }
 
-  addTransfer: RequestHandler = async (req, res) => {
+  addTransfer: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const body = req.body as {
@@ -272,12 +264,11 @@ class Controllers {
 
       res.send({ data: addedTransfer, message: 'transfer added' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  updateTransfer: RequestHandler = async (req, res) => {
+  updateTransfer: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const { id } = req.params as { id: string }
@@ -287,12 +278,11 @@ class Controllers {
 
       res.send({ data: updatedTransfer, message: 'transfer updated' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
-  deleteTransfer: RequestHandler = async (req, res) => {
+  deleteTransfer: RequestHandler = async (req, res, next) => {
     try {
       const { userId } = req.headers as { userId: string }
       const { id } = req.params as { id: string }
@@ -301,15 +291,18 @@ class Controllers {
 
       res.send({ data: deletedTransfer, message: 'transfer deleted' })
     } catch (err) {
-      console.log(err)
-      res.status(400).send(err)
+      next(err)
     }
   }
 
   // currencies
-  getAllCurrencies: RequestHandler = async (req, res) => {
-    const currencies = cc.codes()
-    res.send({ data: currencies })
+  getAllCurrencies: RequestHandler = async (req, res, next) => {
+    try {
+      const currencies = cc.codes()
+      res.send({ data: currencies })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 

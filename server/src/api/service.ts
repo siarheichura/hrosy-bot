@@ -21,6 +21,7 @@ import { OperationDto } from './dtos/operation.dto'
 import { CategoryModel, ICategory } from '../models/Category'
 import { CategoryDto } from './dtos/category.dto'
 import { WalletDto } from './dtos/wallet.dto'
+import { ApiError } from './api-error'
 
 dayjs.extend(utc)
 
@@ -75,7 +76,7 @@ class Service {
 
   // operations
   getOperations = async (
-    chatId: string,
+    userId: string,
     type: OperationType,
     period: { start: string; end: string },
     filters: {
@@ -85,7 +86,6 @@ class Service {
       comment?: string
     }
   ): Promise<IDayOperations[]> => {
-    const user = await UserModel.findOne({ chatId }, { _id: 1 })
     const start = dayjs(period.start).utc(true).startOf('day').toDate()
     const end = dayjs(period.end).utc(true).endOf('day').toDate()
     const { sort, wallets, categories, comment } = filters
@@ -93,7 +93,7 @@ class Service {
     return OperationModel.aggregate([
       {
         $match: {
-          user: user!._id,
+          user: new ObjectId(userId),
           type,
           createdAt: { $gte: start, $lte: end },
           wallet: wallets
@@ -147,209 +147,152 @@ class Service {
   }
 
   getOperation = async (id: string) => {
-    try {
-      const operation = await OperationModel.findById(id)
+    const operation = await OperationModel.findById(id)
 
-      if (!operation) {
-        throw 'operation is not found'
-      }
-
-      return new OperationDto(operation)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!operation) {
+      throw ApiError.BadRequest('Operation is not found')
     }
+
+    return new OperationDto(operation)
   }
 
   addOperation = async (operation: Partial<IOperation>) => {
-    try {
-      const addedOperation = await OperationModel.create({
-        ...operation,
-        createdAt: dayjs(operation.createdAt).utc(true)
-      })
+    const addedOperation = await OperationModel.create({
+      ...operation,
+      createdAt: dayjs(operation.createdAt).utc(true)
+    })
 
-      await this.updateWalletBalance(addedOperation.wallet.toString())
+    await this.updateWalletBalance(addedOperation.wallet.toString())
 
-      return new OperationDto(addedOperation)
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    return new OperationDto(addedOperation)
   }
 
   updateOperation = async (
     operationId: string,
     operation: Partial<IOperation>
   ) => {
-    try {
-      const updatedOperation = await OperationModel.findByIdAndUpdate(
-        operationId,
-        { ...operation, createdAt: dayjs(operation.createdAt).utc(true) },
-        { new: true }
-      )
+    const updatedOperation = await OperationModel.findByIdAndUpdate(
+      operationId,
+      { ...operation, createdAt: dayjs(operation.createdAt).utc(true) },
+      { new: true }
+    )
 
-      if (!updatedOperation) {
-        throw 'operation is not found'
-      }
-
-      const { user } = updatedOperation
-      const wallets = await WalletModel.find({ user }, { id: 1 })
-      await Promise.all(wallets.map(w => this.updateWalletBalance(w.id)))
-
-      return new OperationDto(updatedOperation)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!updatedOperation) {
+      throw ApiError.BadRequest('Operation is not found')
     }
+
+    await this.updateAllUserWalletsBalance(updatedOperation.user.toString())
+
+    return new OperationDto(updatedOperation)
   }
 
   deleteOperation = async (id: string) => {
-    try {
-      const deletedOperation = await OperationModel.findByIdAndDelete(id)
+    const deletedOperation = await OperationModel.findByIdAndDelete(id)
 
-      if (!deletedOperation) {
-        throw 'operation is not found'
-      }
-
-      await this.updateWalletBalance(deletedOperation.wallet.toString())
-
-      return new OperationDto(deletedOperation)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!deletedOperation) {
+      throw ApiError.BadRequest('Operation is not found')
     }
+
+    await this.updateWalletBalance(deletedOperation.wallet.toString())
+
+    return new OperationDto(deletedOperation)
   }
 
   // wallets
   getWallets = async (userId: string) => {
-    try {
-      return WalletModel.find({ user: userId, deletedAt: null })
-        .sort({ isMain: -1 })
-        .transform(wallets => wallets.map(wallet => new WalletDto(wallet)))
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    return WalletModel.find({ user: userId, deletedAt: null })
+      .sort({ isMain: -1 })
+      .transform(wallets => wallets.map(wallet => new WalletDto(wallet)))
   }
 
   addWallet = async (userId: string, wallet: Partial<IWallet>) => {
-    try {
-      const createdWallet = await WalletModel.create({
-        ...wallet,
-        user: userId
-      })
+    const createdWallet = await WalletModel.create({
+      ...wallet,
+      user: userId
+    })
 
-      if (wallet.isMain) {
-        await WalletModel.updateMany(
-          { user: userId, _id: { $ne: createdWallet._id } },
-          { isMain: false }
-        )
-      }
-
-      return new WalletDto(createdWallet)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (wallet.isMain) {
+      await WalletModel.updateMany(
+        { user: userId, _id: { $ne: createdWallet._id } },
+        { isMain: false }
+      )
     }
+
+    return new WalletDto(createdWallet)
   }
 
   deleteWallet = async (id: string) => {
-    try {
-      const deletedWallet = await WalletModel.findByIdAndUpdate(id, {
-        deletedAt: Date.now()
-      })
+    const deletedWallet = await WalletModel.findByIdAndUpdate(id, {
+      deletedAt: Date.now()
+    })
 
-      if (!deletedWallet) {
-        throw 'wallet is not found'
-      }
-
-      // await OperationModel.deleteMany({ wallet: id })
-
-      return new WalletDto(deletedWallet)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!deletedWallet) {
+      throw ApiError.BadRequest('Wallet is not found')
     }
+
+    return new WalletDto(deletedWallet)
   }
 
   updateWallet = async (userId: string, id: string, data: Partial<IWallet>) => {
-    try {
-      const updatedWallet = await WalletModel.findByIdAndUpdate(
-        id,
-        { ...data },
-        { new: true }
-      )
+    const updatedWallet = await WalletModel.findByIdAndUpdate(
+      id,
+      { ...data },
+      { new: true }
+    )
 
-      if (!updatedWallet) {
-        throw 'wallet is not found'
-      }
-
-      if (data.isMain) {
-        await WalletModel.updateMany(
-          { user: userId, _id: { $ne: updatedWallet._id } },
-          { isMain: false }
-        )
-      }
-
-      await OperationModel.updateMany(
-        { wallet: id },
-        { currency: data.currency }
-      )
-
-      return new WalletDto(updatedWallet)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!updatedWallet) {
+      throw ApiError.BadRequest('Wallet is not found')
     }
+
+    if (data.isMain) {
+      await WalletModel.updateMany(
+        { user: userId, _id: { $ne: updatedWallet._id } },
+        { isMain: false }
+      )
+    }
+
+    await OperationModel.updateMany({ wallet: id }, { currency: data.currency })
+
+    return new WalletDto(updatedWallet)
   }
 
   updateWalletBalance = async (walletId: string) => {
-    try {
-      const operationsTotal = await OperationModel.aggregate([
-        { $match: { wallet: new ObjectId(walletId) } },
-        { $group: { _id: '$type', sum: { $sum: '$sum' } } },
-        { $project: { _id: 0, type: '$_id', sum: 1 } }
-      ])
-      const incomesSum =
-        operationsTotal.find(i => i.type === OPERATION_TYPES.INCOME)?.sum || 0
-      const expensesSum =
-        operationsTotal.find(i => i.type === OPERATION_TYPES.EXPENSE)?.sum || 0
+    const operationsTotal = await OperationModel.aggregate([
+      { $match: { wallet: new ObjectId(walletId) } },
+      { $group: { _id: '$type', sum: { $sum: '$sum' } } },
+      { $project: { _id: 0, type: '$_id', sum: 1 } }
+    ])
+    const incomesSum =
+      operationsTotal.find(i => i.type === OPERATION_TYPES.INCOME)?.sum || 0
+    const expensesSum =
+      operationsTotal.find(i => i.type === OPERATION_TYPES.EXPENSE)?.sum || 0
 
-      const transfersFromTotal = await TransferModel.aggregate([
-        { $match: { from: new ObjectId(walletId) } },
-        { $group: { _id: '$from', sum: { $sum: '$sumFrom' } } }
-      ])
-      const transferFromSum = transfersFromTotal[0]?.sum || 0
+    const transfersFromTotal = await TransferModel.aggregate([
+      { $match: { from: new ObjectId(walletId) } },
+      { $group: { _id: '$from', sum: { $sum: '$sumFrom' } } }
+    ])
+    const transferFromSum = transfersFromTotal[0]?.sum || 0
 
-      const transfersToTotal = await TransferModel.aggregate([
-        { $match: { to: new ObjectId(walletId) } },
-        { $group: { _id: '$to', sum: { $sum: '$sumTo' } } }
-      ])
-      const transferToSum = transfersToTotal[0]?.sum || 0
+    const transfersToTotal = await TransferModel.aggregate([
+      { $match: { to: new ObjectId(walletId) } },
+      { $group: { _id: '$to', sum: { $sum: '$sumTo' } } }
+    ])
+    const transferToSum = transfersToTotal[0]?.sum || 0
 
-      const balance = +(
-        incomesSum -
-        expensesSum +
-        transferToSum -
-        transferFromSum
-      ).toFixed(2)
+    const balance = +(
+      incomesSum -
+      expensesSum +
+      transferToSum -
+      transferFromSum
+    ).toFixed(2)
 
-      await WalletModel.findByIdAndUpdate(walletId, { balance })
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    await WalletModel.findByIdAndUpdate(walletId, { balance })
   }
 
   updateAllUserWalletsBalance = async (userId: string) => {
-    try {
-      const wallets = await WalletModel.find({ user: userId }, { id: 1 })
+    const wallets = await WalletModel.find({ user: userId }, { id: 1 })
 
-      return Promise.all(wallets.map(w => this.updateWalletBalance(w.id)))
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    return Promise.all(wallets.map(w => this.updateWalletBalance(w.id)))
   }
 
   // statistics
@@ -413,35 +356,25 @@ class Service {
     userId: string,
     period: { start: string; end: string }
   ) => {
-    try {
-      const start = dayjs(period.start).utc(true).startOf('day').toDate()
-      const end = dayjs(period.end).utc(true).endOf('day').toDate()
+    const start = dayjs(period.start).utc(true).startOf('day').toDate()
+    const end = dayjs(period.end).utc(true).endOf('day').toDate()
 
-      return TransferModel.find({
-        user: userId,
-        createdAt: { $gte: start, $lte: end }
-      }).transform(res => res.map(transfer => new TransferDto(transfer)))
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    return TransferModel.find({
+      user: userId,
+      createdAt: { $gte: start, $lte: end }
+    }).transform(res => res.map(transfer => new TransferDto(transfer)))
   }
 
   addTransfer = async (transfer: Partial<ITransfer>) => {
-    try {
-      const addedTransfer = await TransferModel.create({
-        ...transfer,
-        createdAt: dayjs(transfer.createdAt).utc(true)
-      })
+    const addedTransfer = await TransferModel.create({
+      ...transfer,
+      createdAt: dayjs(transfer.createdAt).utc(true)
+    })
 
-      await this.updateWalletBalance(addedTransfer.from.toString())
-      await this.updateWalletBalance(addedTransfer.to.toString())
+    await this.updateWalletBalance(addedTransfer.from.toString())
+    await this.updateWalletBalance(addedTransfer.to.toString())
 
-      return new TransferDto(addedTransfer)
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    return new TransferDto(addedTransfer)
   }
 
   updateTransfer = async (
@@ -449,113 +382,74 @@ class Service {
     id: string,
     data: Partial<ITransfer>
   ) => {
-    try {
-      const updatedTransfer = await TransferModel.findByIdAndUpdate(
-        id,
-        { ...data, createdAt: dayjs(data.createdAt).utc(true) },
-        { new: true }
-      )
+    const updatedTransfer = await TransferModel.findByIdAndUpdate(
+      id,
+      { ...data, createdAt: dayjs(data.createdAt).utc(true) },
+      { new: true }
+    )
 
-      if (!updatedTransfer) {
-        throw 'transfer is not found'
-      }
-
-      await this.updateAllUserWalletsBalance(userId)
-
-      return new TransferDto(updatedTransfer)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!updatedTransfer) {
+      throw ApiError.BadRequest('Transfer is not found')
     }
+
+    await this.updateAllUserWalletsBalance(userId)
+
+    return new TransferDto(updatedTransfer)
   }
 
   deleteTransfer = async (userId: string, id: string) => {
-    try {
-      const deletedTransfer = await TransferModel.findByIdAndDelete(id)
+    const deletedTransfer = await TransferModel.findByIdAndDelete(id)
 
-      await this.updateAllUserWalletsBalance(userId)
+    await this.updateAllUserWalletsBalance(userId)
 
-      if (!deletedTransfer) {
-        throw 'transfer is not found'
-      }
-
-      return new TransferDto(deletedTransfer)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!deletedTransfer) {
+      throw ApiError.BadRequest('Transfer is not found')
     }
+
+    return new TransferDto(deletedTransfer)
   }
 
   // categories
   getCategories = async (userId: string, type?: OperationType) => {
-    try {
-      return CategoryModel.find({
-        user: userId,
-        deletedAt: null,
-        type: type || { $exists: true }
-      }).transform(categories =>
-        categories.map(category => new CategoryDto(category))
-      )
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    return CategoryModel.find({
+      user: userId,
+      deletedAt: null,
+      type: type || { $exists: true }
+    }).transform(categories =>
+      categories.map(category => new CategoryDto(category))
+    )
   }
 
   addCategory = async (category: Partial<ICategory>) => {
-    try {
-      const addedCategory = await CategoryModel.create(category)
+    const addedCategory = await CategoryModel.create(category)
 
-      return new CategoryDto(addedCategory)
-    } catch (err) {
-      console.log(err)
-      throw err.message
-    }
+    return new CategoryDto(addedCategory)
   }
 
   updateCategory = async (id: string, category: Partial<ICategory>) => {
-    try {
-      const updatedCategory = await CategoryModel.findByIdAndUpdate(
-        id,
-        category,
-        { new: true }
-      )
+    const updatedCategory = await CategoryModel.findByIdAndUpdate(
+      id,
+      category,
+      { new: true }
+    )
 
-      if (!updatedCategory) {
-        throw 'category is not found'
-      }
-
-      return new CategoryDto(updatedCategory)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!updatedCategory) {
+      throw ApiError.BadRequest('Category is not found')
     }
+
+    return new CategoryDto(updatedCategory)
   }
 
   deleteCategory = async (id: string) => {
-    try {
-      // const deletedCategory = await CategoryModel.findByIdAndDelete(id)
-      const deletedCategory = await CategoryModel.findByIdAndUpdate(id, {
-        deletedAt: Date.now()
-      })
+    const deletedCategory = await CategoryModel.findByIdAndUpdate(id, {
+      deletedAt: Date.now()
+    })
 
-      if (!deletedCategory) {
-        throw 'category is not found'
-      }
-
-      return new CategoryDto(deletedCategory)
-    } catch (err) {
-      console.log(err)
-      throw err.message
+    if (!deletedCategory) {
+      throw ApiError.BadRequest('Category is not found')
     }
-  }
 
-  updateCategories = async (
-    chatId: string,
-    categories: ICategories
-  ): Promise<{ message: string }> => {
-    await UserModel.findOneAndUpdate({ chatId }, { categories })
-    return { message: 'categories updated' }
+    return new CategoryDto(deletedCategory)
   }
 }
 
