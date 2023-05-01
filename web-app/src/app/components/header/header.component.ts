@@ -51,8 +51,6 @@ export class HeaderComponent implements OnInit {
       if (event instanceof NavigationStart) {
         const routeName = event.url.replace('/', '')
         this.pageTitle = routeName.startsWith('#') ? 'Operations' : routeName
-      } else if (event instanceof NavigationEnd) {
-        console.log('END URL: ', event.url)
       }
     })
   }

@@ -14,6 +14,7 @@ import { getWallets } from '@store/actions'
 import { environment } from '../../../environments/environment'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { loadingSelector } from '@store/selectors'
+import { tap } from 'rxjs'
 
 declare var Telegram: any
 export const tg = Telegram.WebApp
