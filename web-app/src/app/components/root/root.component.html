@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<div class="router-wrapper">
+<div class="router-wrapper" *ngIf="!(loading$ | async)">
   <router-outlet></router-outlet>
 </div>
 
