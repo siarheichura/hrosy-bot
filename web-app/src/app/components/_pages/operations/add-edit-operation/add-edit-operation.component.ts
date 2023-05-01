@@ -4,16 +4,9 @@ import {
   inject,
   OnInit
 } from '@angular/core'
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { CommonModule } from '@angular/common'
 import { combineLatestWith, map, tap } from 'rxjs'
-
 import { MatCardModule } from '@angular/material/card'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatSelectModule } from '@angular/material/select'
@@ -25,9 +18,7 @@ import {
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog'
-
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
-
 import { Store } from '@ngrx/store'
 import { IState } from '@store/store'
 import {
@@ -35,16 +26,7 @@ import {
   operationSelector,
   walletsSelector
 } from '@store/selectors'
-
 import { OperationType } from '@app/interfaces'
-
-interface IForm {
-  wallet: FormControl<string>
-  category: FormControl<string>
-  sum: FormControl<number>
-  comment: FormControl<string>
-  createdAt: FormControl<Date>
-}
 
 @UntilDestroy()
 @Component({
@@ -74,12 +56,12 @@ export class AddEditOperationComponent implements OnInit {
 
   currency: string
 
-  form: FormGroup<IForm> = this.fb.group({
-    wallet: new FormControl(null, [Validators.required]),
-    category: new FormControl(null, [Validators.required]),
-    sum: new FormControl(null, [Validators.required, Validators.min(0.01)]),
-    comment: new FormControl(null),
-    createdAt: new FormControl(new Date(), [Validators.required])
+  form = this.fb.group({
+    wallet: ['', [Validators.required]],
+    category: ['', [Validators.required]],
+    sum: [null as number, [Validators.required, Validators.min(0.01)]],
+    comment: [''],
+    createdAt: [new Date(), [Validators.required]]
   })
 
   $wallets = this.store.select(walletsSelector).pipe(
