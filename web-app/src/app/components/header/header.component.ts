@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
 
   menuItems = MENU_BUTTONS
   mainWallet: IWallet
-  pageTitle: string = this.route.snapshot.params.type
+  pageTitle: string
 
   wallets$ = this.store.select(walletsSelector).pipe(
     tap(wallets => {
