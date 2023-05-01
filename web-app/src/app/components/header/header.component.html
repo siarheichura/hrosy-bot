@@ -6,16 +6,17 @@
   {{ pageTitle | titlecase }}
 </button>
 
-<button mat-button [matMenuTriggerFor]="walletsMenu">
+<button mat-button>
+  <!--<button mat-button [matMenuTriggerFor]="walletsMenu">-->
   <mat-icon>balance</mat-icon>
   {{ mainWallet?.balance }}{{ mainWallet?.currency }}
 </button>
 
-<mat-menu #walletsMenu="matMenu">
-  <div disabled mat-menu-item *ngFor="let wallet of wallets$ | async">
-    {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}
-  </div>
-</mat-menu>
+<!--<mat-menu #walletsMenu="matMenu">-->
+<!--  <div disabled mat-menu-item *ngFor="let wallet of wallets$ | async">-->
+<!--    {{ wallet.name }}: {{ wallet.balance }}{{ wallet.currency }}-->
+<!--  </div>-->
+<!--</mat-menu>-->
 
 <mat-menu #mainMenu="matMenu">
   <button
