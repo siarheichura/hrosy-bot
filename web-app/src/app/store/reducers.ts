@@ -8,18 +8,18 @@ export const reducers = createReducer(
   // operations
   on(Actions.getOperations, (state, actions) => ({
     ...state,
-    options: actions.options,
-    loading: true
+    options: actions.options
+    // loading: true
   })),
   on(Actions.getOperationsSuccess, (state, action) => ({
     ...state,
-    operations: action.operations,
-    loading: false
+    operations: action.operations
+    // loading: false
   })),
   on(Actions.getOperationsFailure, (state, action) => ({
     ...state,
-    error: action.error,
-    loading: false
+    error: action.error
+    // loading: false
   })),
   on(Actions.getOperation, state => ({ ...state })),
   on(Actions.getOperationSuccess, (state, action) => ({
@@ -45,8 +45,8 @@ export const reducers = createReducer(
   })),
   on(Actions.updateOperationFailure, (state, action) => ({
     ...state,
-    error: action.error,
-    loading: false
+    error: action.error
+    // loading: false
   })),
   on(Actions.deleteOperation, state => ({
     ...state

@@ -44,6 +44,8 @@ import { INITIAL_MONTH_PERIOD } from '@constants/constants'
 import { CardComponent } from '@components/card/card.component'
 import { AddEditOperationComponent } from '@pages/operations/add-edit-operation/add-edit-operation.component'
 import { MatMenuModule } from '@angular/material/menu'
+import { EmptyComponent } from '@components/empty/empty.component'
+import { LetModule } from '@ngrx/component'
 
 interface IFiltersForm {
   wallets: FormControl<string[]>
@@ -71,7 +73,9 @@ interface IFiltersForm {
     MatDialogModule,
     DateRangePickerComponent,
     CardComponent,
-    MatMenuModule
+    MatMenuModule,
+    EmptyComponent,
+    LetModule
   ]
 })
 export class OperationsComponent implements OnInit, OnDestroy {
@@ -84,7 +88,7 @@ export class OperationsComponent implements OnInit, OnDestroy {
   type: OperationType = 'expense'
   isFilterMenuExpanded: boolean = false
   period: IPeriod = INITIAL_MONTH_PERIOD
-  sort: Sort = 1
+  sort: Sort = -1
   filtersForm: FormGroup<IFiltersForm>
 
   operations$ = this.store.select(operationsSelector)

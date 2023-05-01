@@ -14,10 +14,8 @@ import { getWallets } from '@store/actions'
 import { environment } from '../../../environments/environment'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { loadingSelector } from '@store/selectors'
-import { tap } from 'rxjs'
 
 declare var Telegram: any
-export const tg = Telegram.WebApp
 
 @Component({
   selector: 'app-root',
@@ -33,6 +31,8 @@ export const tg = Telegram.WebApp
   ]
 })
 export class RootComponent implements OnInit {
+  tg = Telegram.WebApp
+
   httpService = inject(HttpService)
   store = inject(Store<IState>)
 
@@ -44,14 +44,14 @@ export class RootComponent implements OnInit {
   }
 
   initTelegram() {
-    console.log('TELEGRAM DATA LOG: ', tg)
-    tg.ready()
-    tg.expand()
+    console.log('TELEGRAM DATA LOG: ', this.tg)
+    this.tg.ready()
+    this.tg.expand()
 
     if (environment.production) {
       this.httpService.setUserToLocalStorage(
-        tg.initDataUnsafe.hash,
-        tg.initDataUnsafe.user.id
+        this.tg.initDataUnsafe.hash,
+        this.tg.initDataUnsafe.user.id
       )
     } else {
       this.httpService.setUserToLocalStorage('dev_hash', 5958132991)
