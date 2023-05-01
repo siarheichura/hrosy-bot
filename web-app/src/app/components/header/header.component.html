@@ -1,6 +1,6 @@
-<button mat-button [matMenuTriggerFor]="mainMenu">
+<button mat-button [matMenuTriggerFor]="navMenu">
   <mat-icon>more_vert</mat-icon>
-  {{ pageTitle }}
+  {{ pageTitle | titlecase }}
 </button>
 
 <button mat-button [matMenuTriggerFor]="walletsMenu">
@@ -14,7 +14,7 @@
   </div>
 </mat-menu>
 
-<mat-menu #mainMenu="matMenu">
+<mat-menu #navMenu="matMenu">
   <button
     mat-menu-item
     *ngFor="let item of menuItems"
