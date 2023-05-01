@@ -5,7 +5,12 @@ import {
   OnInit
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router'
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationStart,
+  Router
+} from '@angular/router'
 import { tap } from 'rxjs'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatIconModule } from '@angular/material/icon'
@@ -44,8 +49,10 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.pipe(untilDestroyed(this)).subscribe(event => {
       if (event instanceof NavigationStart) {
-        console.log('URL: ', event.url)
+        console.log('START URL: ', event.url)
         this.pageTitle = event.url.replace('/', '') || 'Operations'
+      } else if (event instanceof NavigationEnd) {
+        console.log('END URL: ', event.url)
       }
     })
   }
